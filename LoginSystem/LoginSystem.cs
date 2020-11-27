@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net.Sockets;
+using System.Text;
+using TcpServerLibrary;
 
 namespace LoginSystem
 {
-    public class LoginSystem
+    public class LoginSystem : StreamManager
+    //public class LoginSystem
     {
         int Buffer_size = 1024;
-        List<string> logins = new string[] { "Admin", "User1", "User2", "User3", "Guest1", "Guest2", "Guest3" };
-        List<string> passwords = new string[] { "AdminPass", "User1Pass", "User2Pass", "User3Pass", "Guest1Pass", "Guest2Pass", "Guest3Pass" };
-        List<string> recovery_questions = new string[]
+        List<string> logins = new List<string>{ "Admin", "User1", "User2", "User3", "Guest1", "Guest2", "Guest3" };
+        List<string> passwords = new List<string> { "AdminPass", "User1Pass", "User2Pass", "User3Pass", "Guest1Pass", "Guest2Pass", "Guest3Pass" };
+        List<string> recovery_questions = new List<string>
         {
             "What is your mother's maiden name?",
             "What is the name of your first pet?",
@@ -17,8 +22,13 @@ namespace LoginSystem
             "Who was your childhood hero?",
             "Where was your best family vacation as a kid?"
         };
-        List<string> roles = new string[] { "Admin", "User", "User", "User", "Guest", "Guest", "Guest" };
+        List<string> roles = new List<string> { "Admin", "User", "User", "User", "Guest", "Guest", "Guest" };
         int logged_id = -1; // 0 - admin, 1+ inni użytkownicy
+
+        public LoginSystem(NetworkStream ns) : base(ns)
+        {
+
+        }
 
         public string get_string(byte[] buffer, int message_size) //funckja zwracajaca string o właściwym rozmiarze
         {
@@ -26,10 +36,10 @@ namespace LoginSystem
             Array.Copy(buffer, buffer_2, message_size);
             return Encoding.UTF8.GetString(buffer_2);
         }   
-
+         //logins.Where(x=> x==name).Count()>0
         public int login_id(string name)    //funkcja sprawdzajaca na którym miejscu w tabeli loginów znajduje się podany login
         {
-            for (int j = 0; j < logins.Length; j++)
+            for (int j = 0; j < logins.Count; j++)
             {
                 if (name == logins[j])
                 {
@@ -73,29 +83,36 @@ namespace LoginSystem
             stream.Write(Encoding.Unicode.GetBytes("Wprowadz nazwe nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz nazwe nowego uzytkownika: " + Environment.NewLine).Length);
             byte[] buffer_new_name = new byte[Buffer_size];
             int message_size_new_name = stream.Read(buffer_new_name, 0, Buffer_size);
-            logins.add(get_string(buffer_new_name,message_size_new_name));
+            logins.Add(get_string(buffer_new_name,message_size_new_name));
 
             stream.Write(Encoding.Unicode.GetBytes("Wprowadz haslo nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz haslo nowego uzytkownika: " + Environment.NewLine).Length);
             byte[] buffer_new_pass= new byte[Buffer_size];
             int message_size_new_pass = stream.Read(buffer_new_pass, 0, Buffer_size);
-            passwords.add(get_string(buffer_new_pass,message_size_new_pass));
+            passwords.Add(get_string(buffer_new_pass,message_size_new_pass));
 
             stream.Write(Encoding.Unicode.GetBytes("Wprowadz pytanie pomocnicze do hasla nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz pytanie pomocnicze do hasla nowego uzytkownika: " + Environment.NewLine).Length);
             byte[] buffer_new_question = new byte[Buffer_size];
             int message_size_new_question = stream.Read(buffer_new_question, 0, Buffer_size);
-            recovery_questions.add(get_string(buffer_new_question,message_size_new_question));
+            recovery_questions.Add(get_string(buffer_new_question,message_size_new_question));
 
             stream.Write(Encoding.Unicode.GetBytes("Wprowadz role nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz role nowego uzytkownika: " + Environment.NewLine).Length);
             byte[] buffer_new_role = new byte[Buffer_size];
             int message_size_new_role = stream.Read(buffer_new_role, 0, Buffer_size);
-            roles.add(get_string(buffer_new_role,message_size_new_role));
+            roles.Add(get_string(buffer_new_role,message_size_new_role));
         }
 
-        public static byte[] messageParser(byte[] data, int size)
+        public static void messageParser(NetworkStream ns)
         {
-            byte[] result = null;
+            //StreamManager sm = new StreamManager(ns);
+            LoginSystem sm = new LoginSystem(ns);
+            while (true)
+            {
+                string message = sm.Data.Trim();
+                if(message==null || message.Length == 0) { return; }
+                //tutaj mozna wstawic kod obslugujacy wiadomosc
+                //odpowiedz mozna wyslac przez sm.Data = "odpowiedz"
 
-            return result;
+            }
         }
 
     }

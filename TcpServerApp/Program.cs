@@ -27,7 +27,7 @@ namespace TcpServerApp
                 TcpServer tcpServer = new TcpServer(host, port);
                 Console.WriteLine($"Uruchomiono serwer na adresie {host}:{port}");
                 //tcpServer.Listening(MessageTimeParser.messageParser);
-                tcpServer.OutputGenerateFunction = MessageTimeParser.messageParser;
+                //tcpServer.OutputGenerateFunction = MessageTimeParser.messageParser;
                 tcpServer.Listening();
             }catch(Exception e)
             {

@@ -14,10 +14,15 @@ namespace TcpServerLibrary
     public class TcpServer
     {
         protected TcpListener tcpListener;
-        protected Func<byte[], int, byte[]> outputGenerateFunction;
-        public Func<byte[], int, byte[]> OutputGenerateFunction
+        // protected Func<byte[], int, byte[]> outputGenerateFunction;
+        /*public Func<byte[], int, byte[]> OutputGenerateFunction
         {
             set => outputGenerateFunction = value;
+        }*/
+        protected Action<NetworkStream> serverFunction;
+        public Action<NetworkStream> ServerMessageParserFunction
+        {
+            set => serverFunction = value;
         }
 
         /// <summary>
@@ -28,7 +33,7 @@ namespace TcpServerLibrary
         public TcpServer(string host, int port)
         {
             tcpListener = new TcpListener(IPAddress.Parse(host), port);
-            outputGenerateFunction = (x, y) => x.Take(y).ToArray();
+            serverFunction = null;
         }
 
         /// <summary>
@@ -41,14 +46,7 @@ namespace TcpServerLibrary
             tcpListener.Start();
             TcpClient tcpClient = tcpListener.AcceptTcpClient();
             NetworkStream stream = tcpClient.GetStream();
-            int count;
-            byte[] data = new byte[1024];
-            while((count=stream.Read(data, 0, data.Length)) > 0)
-            {
-                byte[] answer = outputGenerateFunction(data, count);
-                if (answer == null || answer.Length == 0) { break; }
-                stream.Write(answer, 0, answer.Length);
-            }
+            serverFunction(stream);
             tcpListener.Stop();
         }
 
@@ -60,14 +58,7 @@ namespace TcpServerLibrary
                 TcpClient client = tcpListener.AcceptTcpClient();
                 Task task = new Task((x) => {
                     NetworkStream stream = (NetworkStream)x;
-                    int count;
-                    byte[] data = new byte[1024];
-                    while ((count = stream.Read(data, 0, data.Length)) > 0)
-                    {
-                        byte[] answer = outputGenerateFunction(data, count);
-                        if (answer == null || answer.Length == 0) { break; }
-                        stream.Write(answer, 0, answer.Length);
-                    }
+                    serverFunction(stream);
                 }, client.GetStream());
                 task.Start();
             }

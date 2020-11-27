@@ -16,7 +16,7 @@ namespace LoginSystemTest
             {
                 TcpServer tcpServer = new TcpServer(host, port);
                 Console.WriteLine($"Uruchomiono serwer na adresie {host}:{port}");
-                tcpServer.OutputGenerateFunction = LoginSystem.LoginSystem.messageParser;
+                tcpServer.ServerMessageParserFunction = LoginSystem.LoginSystem.messageParser;
                 tcpServer.Listening();
             }
             catch (Exception e)
