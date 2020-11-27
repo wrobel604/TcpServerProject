@@ -78,18 +78,58 @@ namespace LoginSystem
             }
         }
 
+        public bool check_pass(string pass)//funkcja sprawdzająca poprawnosc hasla
+        {
+            bool is_upper = false;
+            bool is_number = false;
+            if (pass.Length < 8)
+            {
+                return false;
+            }
+
+
+            for (int i = 0; i < pass.Length; i++)
+            {
+                if (Char.IsUpper(pass[i]))
+                {
+                    is_upper = true;
+                }
+                if (Char.IsDigit(pass[i]))
+                {
+                    is_number = true;
+                }
+            }
+            if (is_number && is_upper)
+            {
+                return true;
+            }
+            return false;
+
+
+        }
         public void new_user(NetworkStream stream) //funkcja do tworzenia nowego użytkownika
         {
             stream.Write(Encoding.Unicode.GetBytes("Wprowadz nazwe nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz nazwe nowego uzytkownika: " + Environment.NewLine).Length);
             byte[] buffer_new_name = new byte[Buffer_size];
             int message_size_new_name = stream.Read(buffer_new_name, 0, Buffer_size);
             logins.Add(get_string(buffer_new_name,message_size_new_name));
-
-            stream.Write(Encoding.Unicode.GetBytes("Wprowadz haslo nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz haslo nowego uzytkownika: " + Environment.NewLine).Length);
-            byte[] buffer_new_pass= new byte[Buffer_size];
-            int message_size_new_pass = stream.Read(buffer_new_pass, 0, Buffer_size);
-            passwords.Add(get_string(buffer_new_pass,message_size_new_pass));
-
+            bool pass_ok = false;
+            while (pass_ok == false)
+            {
+                stream.Write(Encoding.Unicode.GetBytes("Wprowadz haslo nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz haslo nowego uzytkownika: " + Environment.NewLine).Length);
+                byte[] buffer_new_pass = new byte[Buffer_size];
+                int message_size_new_pass = stream.Read(buffer_new_pass, 0, Buffer_size);
+                if (check_pass(get_string(buffer_new_pass, message_size_new_pass)))
+                {
+                    passwords.Add(get_string(buffer_new_pass, message_size_new_pass));
+                    pass_ok = true;
+                }
+                else
+                {
+                    stream.Write(Encoding.Unicode.GetBytes("Haslo powinno spelniac nastepujace wymagania: \n -co najmniej jedna duza litera \n -co najmniej jedna cyfra \n -dlugosc hasla nie powinna byc krotsza niz 8 znakow" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo powinno spelniac nastepujace wymagania: \n - co najmniej jedna duza litera \n - co najmniej jedna cyfra \n - dlugosc hasla nie powinna byc krotsza niz 8 znakow" + Environment.NewLine).Length);
+                }
+                
+            }
             stream.Write(Encoding.Unicode.GetBytes("Wprowadz pytanie pomocnicze do hasla nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz pytanie pomocnicze do hasla nowego uzytkownika: " + Environment.NewLine).Length);
             byte[] buffer_new_question = new byte[Buffer_size];
             int message_size_new_question = stream.Read(buffer_new_question, 0, Buffer_size);
