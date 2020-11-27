@@ -68,11 +68,11 @@ namespace LoginSystem
                 string pass=get_string(buffer_pass,message_size_pass);
                 if(passwords[logged_id] == pass)
                 {
-                    stream.Write(Encoding.Unicode.GetBytes("Haslo poprawne, Witaj " + Encoding.ASCII.GetString(nazwa_uzytkownika_bez_0) + " " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo poprawne, Witaj " + Encoding.ASCII.GetString(nazwa_uzytkownika_bez_0) + " " + Environment.NewLine).Length);
+                    //stream.Write(Encoding.Unicode.GetBytes("Haslo poprawne, Witaj " + Encoding.ASCII.GetString(nazwa_uzytkownika_bez_0) + " " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo poprawne, Witaj " + Encoding.ASCII.GetString(nazwa_uzytkownika_bez_0) + " " + Environment.NewLine).Length);
                 }
                 else
                 {
-                    stream.Write(Encoding.Unicode.GetBytes("Haslo niepoprawne" + Encoding.ASCII.GetString(nazwa_uzytkownika_bez_0) + " " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo niepoprawne" + Encoding.ASCII.GetString(nazwa_uzytkownika_bez_0) + " " + Environment.NewLine).Length);
+                    //stream.Write(Encoding.Unicode.GetBytes("Haslo niepoprawne" + Encoding.ASCII.GetString(nazwa_uzytkownika_bez_0) + " " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo niepoprawne" + Encoding.ASCII.GetString(nazwa_uzytkownika_bez_0) + " " + Environment.NewLine).Length);
                     logged_id = -1;
                 }
             }
