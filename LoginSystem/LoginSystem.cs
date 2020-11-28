@@ -140,17 +140,31 @@ namespace LoginSystem
             int message_size_new_role = stream.Read(buffer_new_role, 0, Buffer_size);
             roles.Add(get_string(buffer_new_role,message_size_new_role));
         }
-        public void change_password(NetworkStream stream)
+        public void change_password(NetworkStream stream)//funkcja umozliwiajaca uzytkownikomi zmiane hasla po zalogowaniu
         {
             stream.Write(Encoding.Unicode.GetBytes("Podaj aktualne haslo" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Podaj aktualne haslo" + Environment.NewLine).Length);
             byte[] buffer_old_pass = new byte[Buffer_size];
             int message_size_old_pass = stream.Read(buffer_old_pass, 0, Buffer_size);
-            stream.Write(Encoding.Unicode.GetBytes("Podaj nowe haslo" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Podaj nowe haslo" + Environment.NewLine).Length);
+            bool pass_ok = false;
             byte[] buffer_new_pass = new byte[Buffer_size];
             int message_size_new_pass = stream.Read(buffer_new_pass, 0, Buffer_size);
-            if(passwords.Contains(get_string(buffer_old_pass, message_size_old_pass)))
+            if (passwords.Contains(get_string(buffer_old_pass, message_size_old_pass)))
             {
-                passwords[passwords.FindIndex(x => x.Equals(get_string(buffer_old_pass, message_size_old_pass)))] = get_string(buffer_new_pass, message_size_new_pass);
+                while (pass_ok == false)
+                {
+                    stream.Write(Encoding.Unicode.GetBytes("Podaj nowe haslo" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Podaj nowe haslo" + Environment.NewLine).Length);
+                    buffer_new_pass = new byte[Buffer_size];
+                    message_size_new_pass = stream.Read(buffer_new_pass, 0, Buffer_size);
+                    if (check_pass(get_string(buffer_new_pass, message_size_new_pass)))
+                    {
+                        pass_ok = true;
+                    }
+                    else
+                    {
+                        stream.Write(Encoding.Unicode.GetBytes("Haslo powinno spelniac nastepujace wymagania: \n -co najmniej jedna duza litera \n -co najmniej jedna cyfra \n -dlugosc hasla nie powinna byc krotsza niz 8 znakow" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo powinno spelniac nastepujace wymagania: \n - co najmniej jedna duza litera \n - co najmniej jedna cyfra \n - dlugosc hasla nie powinna byc krotsza niz 8 znakow" + Environment.NewLine).Length);
+                    }
+                }
+            passwords[passwords.FindIndex(x => x.Equals(get_string(buffer_old_pass, message_size_old_pass)))] = get_string(buffer_new_pass, message_size_new_pass);
             }
             else
             {
