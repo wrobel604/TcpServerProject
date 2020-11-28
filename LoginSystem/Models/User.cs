@@ -10,8 +10,8 @@ namespace LoginSystem.Models
         //int role;
         //lub
         //Role role; //enum Role{}
-        //public List<KeyValuePair<string, string> recovery_questions;//Pary klucz-pytanie, wartość-odpowiedź
+        public KeyValuePair<string, string> recovery_questions;//Pary klucz-pytanie, wartość-odpowiedź
 
-       // public bool changePassword(string new_password);
+        //public bool changePassword(string new_password);
     }
 }

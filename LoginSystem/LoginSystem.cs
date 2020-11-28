@@ -3,41 +3,44 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 using TcpServerLibrary;
+using LoginSystem.Models;
 
 namespace LoginSystem
 {
     public class LoginSystem : StreamManager
     //public class LoginSystem
     {
+        public static List<User> users = null;
+        private User user;
         int Buffer_size = 1024;
-        List<string> logins = new List<string>{ "Admin", "User1", "User2", "User3", "Guest1", "Guest2", "Guest3" };
-        List<string> passwords = new List<string> { "AdminPass", "User1Pass", "User2Pass", "User3Pass", "Guest1Pass", "Guest2Pass", "Guest3Pass" };
-        List<string> recovery_questions = new List<string>
-        {
-            "What is your mother's maiden name?",
-            "What is the name of your first pet?",
-            "What was your first car?",
-            "What elementary school did you attend?",
-            "What is the name of the town where you were born?",
-            "Who was your childhood hero?",
-            "Where was your best family vacation as a kid?"
-        };
-        List<string> recovery_answers = new List<string>
-        {
-            "Jonh",
-            "Bork",
-            "Fiat",
-            "SP5",
-            "New York",
-            "Dad",
-            "Oświęcim"
-        };
-        List<string> roles = new List<string> { "Admin", "User", "User", "User", "Guest", "Guest", "Guest" };
         int logged_id = -1; // 0 - admin, 1+ inni użytkownicy
 
         public LoginSystem(NetworkStream ns) : base(ns)
         {
-
+            if (users == null)
+            {
+                users = new List<User>();
+                users.Add(new User {
+                    login = "Admin",
+                    password = "User1Pass",
+                    recovery_questions = new KeyValuePair<string, string>("What is your mother's maiden name?", "Jonh"),
+                    role = "Admin"
+                });
+                users.Add(new User
+                {
+                    login = "User1",
+                    password = "AdminPass",
+                    recovery_questions = new KeyValuePair<string, string>("What is the name of your first pet?", "Bork"),
+                    role = "User"
+                });
+                users.Add(new User
+                {
+                    login = "Guest1",
+                    password = "Guest1Pass",
+                    recovery_questions = new KeyValuePair<string, string>("What is the name of the town where you were born?", "New York"),
+                    role = "Guest"
+                });
+            }
         }
 
         public string get_string(byte[] buffer, int message_size) //funckja zwracajaca string o właściwym rozmiarze
@@ -244,8 +247,11 @@ namespace LoginSystem
             LoginSystem sm = new LoginSystem(ns);
             while (true)
             {
-                string message = sm.Data.Trim();
-                if(message==null || message.Length == 0) { return; }
+                string message = sm.Data;
+                if(message==null || message.Length == 0) { return; } else
+                {
+                    message = message.Trim();
+                }
                 //tutaj mozna wstawic kod obslugujacy wiadomosc
                 //odpowiedz mozna wyslac przez sm.Data = "odpowiedz"
 
