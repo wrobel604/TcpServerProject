@@ -22,6 +22,16 @@ namespace LoginSystem
             "Who was your childhood hero?",
             "Where was your best family vacation as a kid?"
         };
+        List<string> recovery_answers = new List<string>
+        {
+            "Jonh",
+            "Bork",
+            "Fiat",
+            "SP5",
+            "New York",
+            "Dad",
+            "Oświęcim"
+        };
         List<string> roles = new List<string> { "Admin", "User", "User", "User", "Guest", "Guest", "Guest" };
         int logged_id = -1; // 0 - admin, 1+ inni użytkownicy
 
@@ -135,6 +145,11 @@ namespace LoginSystem
             int message_size_new_question = stream.Read(buffer_new_question, 0, Buffer_size);
             recovery_questions.Add(get_string(buffer_new_question,message_size_new_question));
 
+            stream.Write(Encoding.Unicode.GetBytes("Wprowadz odpowiedźddo pytania pomocniczego: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz odpowiedźddo pytania pomocniczego: " + Environment.NewLine).Length);
+            byte[] buffer_new_answer = new byte[Buffer_size];
+            int message_size_new_answer = stream.Read(buffer_new_question, 0, Buffer_size);
+            recovery_answers.Add(get_string(buffer_new_answer, message_size_new_answer));
+
             stream.Write(Encoding.Unicode.GetBytes("Wprowadz role nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz role nowego uzytkownika: " + Environment.NewLine).Length);
             byte[] buffer_new_role = new byte[Buffer_size];
             int message_size_new_role = stream.Read(buffer_new_role, 0, Buffer_size);
@@ -158,6 +173,57 @@ namespace LoginSystem
             }
 
         }
+
+        public void remove_user(NetworkStream stream)
+        {
+            if(logged_id != 0)
+            {
+                stream.Write(Encoding.Unicode.GetBytes("Nie masz odpowiednich uprawnień" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Nie masz odpowiednich uprawnień" + Environment.NewLine).Length);
+            }
+            else
+            {
+                stream.Write(Encoding.Unicode.GetBytes("Jakiego użytkownika usunąć (podaj login)?" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Jakiego użytkownika usunąć?" + Environment.NewLine).Length);
+                byte[] buffer_user_to_remove = new byte[Buffer_size];
+                int message_size_users_login_to_remove = stream.Read(buffer_user_to_remove, 0, Buffer_size);
+                int id = login_id(get_string(buffer_user_to_remove, message_size_users_login_to_remove));
+                logins.RemoveAt(id);
+                passwords.RemoveAt(id);
+                recovery_questions.RemoveAt(id);
+                recovery_answers.RemoveAt(id);
+            }
+        }
+
+        public void remain_password(NetworkStream stream)
+        {
+            byte[] buffer = new byte[Buffer_size];
+            stream.Write(Encoding.Unicode.GetBytes("Wprowadz login: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz login: " + Environment.NewLine).Length);
+            int message_size = stream.Read(buffer, 0, Buffer_size);
+            string name = get_string(buffer, message_size);
+            logged_id = login_id(name);
+            if (logged_id == -1)
+            {
+                stream.Write(Encoding.Unicode.GetBytes("Login Niepoprawny " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Login Niepoprawny " + Environment.NewLine).Length);
+            }
+            else
+            {
+                stream.Write(Encoding.Unicode.GetBytes(recovery_questions[login_id(name)] + Environment.NewLine), 0, Encoding.Unicode.GetBytes(recovery_questions[login_id(name)] + Environment.NewLine).Length);
+                byte[] buffer_answ = new byte[Buffer_size];
+                stream.Write(Encoding.Unicode.GetBytes("Wprowadz odpowiedz: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz odpowiedz: " + Environment.NewLine).Length);
+                int message_size_answ = stream.Read(buffer, 0, Buffer_size);
+                string answer = get_string(buffer, message_size);
+                if(answer == recovery_answers[login_id(name)])
+                {
+                    stream.Write(Encoding.Unicode.GetBytes("Haslo to: " + passwords[login_id(name)] + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo to: " + passwords[login_id(name)] + Environment.NewLine).Length);
+                }
+                else
+                {
+                    stream.Write(Encoding.Unicode.GetBytes("Błędna odpowiedz: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Błędna odpowiedz: " + Environment.NewLine).Length);
+                }
+
+            }
+        }
+
+
         public static void messageParser(NetworkStream ns)
         {
             //StreamManager sm = new StreamManager(ns);
