@@ -140,7 +140,24 @@ namespace LoginSystem
             int message_size_new_role = stream.Read(buffer_new_role, 0, Buffer_size);
             roles.Add(get_string(buffer_new_role,message_size_new_role));
         }
+        public void change_password(NetworkStream stream)
+        {
+            stream.Write(Encoding.Unicode.GetBytes("Podaj aktualne haslo" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Podaj aktualne haslo" + Environment.NewLine).Length);
+            byte[] buffer_old_pass = new byte[Buffer_size];
+            int message_size_old_pass = stream.Read(buffer_old_pass, 0, Buffer_size);
+            stream.Write(Encoding.Unicode.GetBytes("Podaj nowe haslo" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Podaj nowe haslo" + Environment.NewLine).Length);
+            byte[] buffer_new_pass = new byte[Buffer_size];
+            int message_size_new_pass = stream.Read(buffer_new_pass, 0, Buffer_size);
+            if(passwords.Contains(get_string(buffer_old_pass, message_size_old_pass)))
+            {
+                passwords[passwords.FindIndex(x => x.Equals(get_string(buffer_old_pass, message_size_old_pass)))] = get_string(buffer_new_pass, message_size_new_pass);
+            }
+            else
+            {
+                stream.Write(Encoding.Unicode.GetBytes("Podano bledne haslo" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Podano bledne haslo" + Environment.NewLine).Length);
+            }
 
+        }
         public static void messageParser(NetworkStream ns)
         {
             //StreamManager sm = new StreamManager(ns);
