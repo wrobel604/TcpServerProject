@@ -52,9 +52,9 @@ namespace LoginSystem
          //logins.Where(x=> x==name).Count()>0
         public int login_id(string name)    //funkcja sprawdzajaca na którym miejscu w tabeli loginów znajduje się podany login
         {
-            for (int j = 0; j < logins.Count; j++)
+            for (int j = 0; j < users.Count; j++)
             {
-                if (name == logins[j])
+                if (name == users[j].login)
                 {
                     return j;
                 }
@@ -79,7 +79,7 @@ namespace LoginSystem
                 byte[] buffer_pass = new byte[Buffer_size];
                 int message_size_pass = stream.Read(buffer_pass, 0, Buffer_size);
                 string pass=get_string(buffer_pass,message_size_pass);
-                if(passwords[logged_id] == pass)
+                if(users[logged_id].password == pass)
                 {
                     //stream.Write(Encoding.Unicode.GetBytes("Haslo poprawne, Witaj " + Encoding.ASCII.GetString(nazwa_uzytkownika_bez_0) + " " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo poprawne, Witaj " + Encoding.ASCII.GetString(nazwa_uzytkownika_bez_0) + " " + Environment.NewLine).Length);
                 }
@@ -125,16 +125,15 @@ namespace LoginSystem
             stream.Write(Encoding.Unicode.GetBytes("Wprowadz nazwe nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz nazwe nowego uzytkownika: " + Environment.NewLine).Length);
             byte[] buffer_new_name = new byte[Buffer_size];
             int message_size_new_name = stream.Read(buffer_new_name, 0, Buffer_size);
-            logins.Add(get_string(buffer_new_name,message_size_new_name));
             bool pass_ok = false;
+            byte[] buffer_new_pass = new byte[Buffer_size];
+            int message_size_new_pass = 0;
             while (pass_ok == false)
             {
                 stream.Write(Encoding.Unicode.GetBytes("Wprowadz haslo nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz haslo nowego uzytkownika: " + Environment.NewLine).Length);
-                byte[] buffer_new_pass = new byte[Buffer_size];
-                int message_size_new_pass = stream.Read(buffer_new_pass, 0, Buffer_size);
+                message_size_new_pass = stream.Read(buffer_new_pass, 0, Buffer_size);
                 if (check_pass(get_string(buffer_new_pass, message_size_new_pass)))
                 {
-                    passwords.Add(get_string(buffer_new_pass, message_size_new_pass));
                     pass_ok = true;
                 }
                 else
@@ -146,17 +145,21 @@ namespace LoginSystem
             stream.Write(Encoding.Unicode.GetBytes("Wprowadz pytanie pomocnicze do hasla nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz pytanie pomocnicze do hasla nowego uzytkownika: " + Environment.NewLine).Length);
             byte[] buffer_new_question = new byte[Buffer_size];
             int message_size_new_question = stream.Read(buffer_new_question, 0, Buffer_size);
-            recovery_questions.Add(get_string(buffer_new_question,message_size_new_question));
 
             stream.Write(Encoding.Unicode.GetBytes("Wprowadz odpowiedźddo pytania pomocniczego: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz odpowiedźddo pytania pomocniczego: " + Environment.NewLine).Length);
             byte[] buffer_new_answer = new byte[Buffer_size];
             int message_size_new_answer = stream.Read(buffer_new_question, 0, Buffer_size);
-            recovery_answers.Add(get_string(buffer_new_answer, message_size_new_answer));
 
             stream.Write(Encoding.Unicode.GetBytes("Wprowadz role nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz role nowego uzytkownika: " + Environment.NewLine).Length);
             byte[] buffer_new_role = new byte[Buffer_size];
             int message_size_new_role = stream.Read(buffer_new_role, 0, Buffer_size);
-            roles.Add(get_string(buffer_new_role,message_size_new_role));
+            users.Add(new User
+            {
+                login = get_string(buffer_new_name, message_size_new_name),
+                password = get_string(buffer_new_pass, message_size_new_pass),
+                recovery_questions = new KeyValuePair<string, string>(get_string(buffer_new_question, message_size_new_question), get_string(buffer_new_answer, message_size_new_answer)),
+                role = get_string(buffer_new_role, message_size_new_role)
+            });
         }
         public void change_password(NetworkStream stream)//funkcja umozliwiajaca uzytkownikomi zmiane hasla po zalogowaniu
         {
@@ -203,10 +206,11 @@ namespace LoginSystem
                 byte[] buffer_user_to_remove = new byte[Buffer_size];
                 int message_size_users_login_to_remove = stream.Read(buffer_user_to_remove, 0, Buffer_size);
                 int id = login_id(get_string(buffer_user_to_remove, message_size_users_login_to_remove));
-                logins.RemoveAt(id);
+                users.RemoveAt(id);
+                /*logins.RemoveAt(id);
                 passwords.RemoveAt(id);
                 recovery_questions.RemoveAt(id);
-                recovery_answers.RemoveAt(id);
+                recovery_answers.RemoveAt(id);*/
             }
         }
 
