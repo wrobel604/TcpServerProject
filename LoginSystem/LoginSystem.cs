@@ -169,6 +169,12 @@ namespace LoginSystem
             bool pass_ok = false;
             byte[] buffer_new_pass = new byte[Buffer_size];
             int message_size_new_pass = stream.Read(buffer_new_pass, 0, Buffer_size);
+            List<string> passwords = new List<string>();
+            for(int i = 0; i < users.Count; i++)
+            {
+                passwords.Add(users[i].password);
+            }
+
             if (passwords.Contains(get_string(buffer_old_pass, message_size_old_pass)))
             {
                 while (pass_ok == false)
@@ -221,6 +227,25 @@ namespace LoginSystem
             int message_size = stream.Read(buffer, 0, Buffer_size);
             string name = get_string(buffer, message_size);
             logged_id = login_id(name);
+
+            List<string> passwords = new List<string>();
+            for (int i = 0; i < users.Count; i++)
+            {
+                passwords.Add(users[i].password);
+            }
+
+            List<string> recovery_questions = new List<string>();
+            for (int i = 0; i < users.Count; i++)
+            {
+                recovery_questions.Add(users[i].recovery_questions.Key);
+            }
+
+            List<string> recovery_answers = new List<string>();
+            for (int i = 0; i < users.Count; i++)
+            {
+                recovery_answers.Add(users[i].recovery_questions.Value);
+            }
+
             if (logged_id == -1)
             {
                 stream.Write(Encoding.Unicode.GetBytes("Login Niepoprawny " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Login Niepoprawny " + Environment.NewLine).Length);
@@ -298,7 +323,7 @@ namespace LoginSystem
                 }
             }
         }
-        public  void messageParser(NetworkStream ns)
+        public void messageParser(NetworkStream ns)
         {
             //StreamManager sm = new StreamManager(ns);
             LoginSystem sm = new LoginSystem(ns);
@@ -311,7 +336,10 @@ namespace LoginSystem
                 }*/
                 //tutaj mozna wstawic kod obslugujacy wiadomosc
                 //odpowiedz mozna wyslac przez sm.Data = "odpowiedz"
-                menu(ns);
+
+
+
+                menu(ns);  //a żeby to zadziałało to nie może być statyczna
 
             }
         }

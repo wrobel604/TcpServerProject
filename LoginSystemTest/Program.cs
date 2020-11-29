@@ -8,6 +8,7 @@ namespace LoginSystemTest
     {
         static void Main(string[] args)
         {
+            
             string host = "127.0.0.1";
             if (args.Length > 0) { host = args[0]; }
             int port = 5555;
@@ -16,7 +17,7 @@ namespace LoginSystemTest
             {
                 TcpServer tcpServer = new TcpServer(host, port);
                 Console.WriteLine($"Uruchomiono serwer na adresie {host}:{port}");
-                tcpServer.ServerMessageParserFunction = LoginSystem.LoginSystem.messageParser;
+                tcpServer.ServerMessageParserFunction = LoginSystem.LoginSystem.messageParser;//Zeby to zadziałało to messageParser musi być statyczna
                 tcpServer.Listening();
             }
             catch (Exception e)

@@ -11,7 +11,7 @@ namespace LoginSystem.Models
         //lub
         //Role role; //enum Role{}
         public KeyValuePair<string, string> recovery_questions;//Pary klucz-pytanie, wartość-odpowiedź
-
+        
         //public bool changePassword(string new_password);
     }
 }
