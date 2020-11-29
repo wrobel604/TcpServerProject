@@ -251,6 +251,60 @@ namespace LoginSystem
 
             }
         }
+       void menu(NetworkStream ns)
+       {
+            while (true)
+            {
+                if (logged_id == -1)
+                {
+                    ns.Write(Encoding.Unicode.GetBytes("1.Logowanie " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("1.Logowanie " + Environment.NewLine).Length);
+                    ns.Write(Encoding.Unicode.GetBytes("2.Nowy uzytkownik " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("2.Nowy uzytkownik " + Environment.NewLine).Length);
+                    ns.Write(Encoding.Unicode.GetBytes("3.Przypomnij haslo " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("3.Przypomnij haslo " + Environment.NewLine).Length);
+                    byte[] buffer = new byte[Buffer_size];
+                    int message_size = ns.Read(buffer, 0, Buffer_size);
+                    string buffer2 = get_string(buffer, message_size);
+                    if(buffer2=="1")
+                    {
+                        login(ns);
+                    }
+                    else if (buffer2=="2")
+                    {
+                        new_user(ns);
+                    }
+                    else if (buffer2=="3")
+                    {
+                        remain_password(ns);
+                    }
+                }
+                else if (logged_id == 0)
+                {
+                    ns.Write(Encoding.Unicode.GetBytes("1.Zmien haslo " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("1.Zmien haslo " + Environment.NewLine).Length);
+                    ns.Write(Encoding.Unicode.GetBytes("2.Usun uzytkownika " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("2.U " + Environment.NewLine).Length);
+                    byte[] buffer = new byte[Buffer_size];
+                    int message_size = ns.Read(buffer, 0, Buffer_size);
+                    string buffer2 = get_string(buffer, message_size);
+                    if (buffer2 == "1")
+                    {
+                        change_password(ns);
+                    }
+                    else if (buffer2 == "2")
+                    {
+                        remove_user(ns);
+                    }
+                }
+                else
+                {
+                    ns.Write(Encoding.Unicode.GetBytes("1.Zmien haslo " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("1.Zmien haslo " + Environment.NewLine).Length);
+                    byte[] buffer = new byte[Buffer_size];
+                    int message_size = ns.Read(buffer, 0, Buffer_size);
+                    string buffer2 = get_string(buffer, message_size);
+                    if (buffer2 == "1")
+                    {
+                        change_password(ns);
+                    }
+                }
+            }
+       }
 
     }
 }
