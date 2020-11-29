@@ -244,25 +244,8 @@ namespace LoginSystem
             }
         }
 
-
-        public static void messageParser(NetworkStream ns)
+        void menu(NetworkStream ns)
         {
-            //StreamManager sm = new StreamManager(ns);
-            LoginSystem sm = new LoginSystem(ns);
-            while (true)
-            {
-                string message = sm.Data;
-                if(message==null || message.Length == 0) { return; } else
-                {
-                    message = message.Trim();
-                }
-                //tutaj mozna wstawic kod obslugujacy wiadomosc
-                //odpowiedz mozna wyslac przez sm.Data = "odpowiedz"
-
-            }
-        }
-       void menu(NetworkStream ns)
-       {
             while (true)
             {
                 if (logged_id == -1)
@@ -273,15 +256,15 @@ namespace LoginSystem
                     byte[] buffer = new byte[Buffer_size];
                     int message_size = ns.Read(buffer, 0, Buffer_size);
                     string buffer2 = get_string(buffer, message_size);
-                    if(buffer2=="1")
+                    if (buffer2 == "1")
                     {
                         login(ns);
                     }
-                    else if (buffer2=="2")
+                    else if (buffer2 == "2")
                     {
                         new_user(ns);
                     }
-                    else if (buffer2=="3")
+                    else if (buffer2 == "3")
                     {
                         remain_password(ns);
                     }
@@ -314,7 +297,25 @@ namespace LoginSystem
                     }
                 }
             }
-       }
+        }
+        public  void messageParser(NetworkStream ns)
+        {
+            //StreamManager sm = new StreamManager(ns);
+            LoginSystem sm = new LoginSystem(ns);
+            while (true)
+            {
+                /*string message = sm.Data;
+                if(message==null || message.Length == 0) { return; } else
+                {
+                    message = message.Trim();
+                }*/
+                //tutaj mozna wstawic kod obslugujacy wiadomosc
+                //odpowiedz mozna wyslac przez sm.Data = "odpowiedz"
+                menu(ns);
+
+            }
+        }
+       
 
     }
 }
