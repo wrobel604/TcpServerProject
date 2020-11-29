@@ -323,7 +323,7 @@ namespace LoginSystem
                 }
             }
         }
-        public void messageParser(NetworkStream ns)
+        public static void messageParser(NetworkStream ns)
         {
             //StreamManager sm = new StreamManager(ns);
             LoginSystem sm = new LoginSystem(ns);
@@ -339,7 +339,7 @@ namespace LoginSystem
 
 
 
-                menu(ns);  //a żeby to zadziałało to nie może być statyczna
+                sm.menu(ns);  //a żeby to zadziałało to nie może być statyczna
 
             }
         }
