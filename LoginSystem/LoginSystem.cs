@@ -191,7 +191,8 @@ namespace LoginSystem
                         stream.Write(Encoding.Unicode.GetBytes("Haslo powinno spelniac nastepujace wymagania: \n -co najmniej jedna duza litera \n -co najmniej jedna cyfra \n -dlugosc hasla nie powinna byc krotsza niz 8 znakow" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo powinno spelniac nastepujace wymagania: \n - co najmniej jedna duza litera \n - co najmniej jedna cyfra \n - dlugosc hasla nie powinna byc krotsza niz 8 znakow" + Environment.NewLine).Length);
                     }
                 }
-            passwords[passwords.FindIndex(x => x.Equals(get_string(buffer_old_pass, message_size_old_pass)))] = get_string(buffer_new_pass, message_size_new_pass);
+            users[users.FindIndex(x=>x.password.Equals(get_string(buffer_old_pass, message_size_old_pass)))].password = get_string(buffer_new_pass, message_size_new_pass);
+            //passwords[passwords.FindIndex(x => x.Equals(get_string(buffer_old_pass, message_size_old_pass)))] = get_string(buffer_new_pass, message_size_new_pass);
             }
             else
             {
