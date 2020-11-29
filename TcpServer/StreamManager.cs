@@ -8,7 +8,7 @@ namespace TcpServerLibrary
 {
     public class StreamManager
     {
-        NetworkStream networkStream;
+        public NetworkStream networkStream;
         byte[] data;
         public string Data
         {
