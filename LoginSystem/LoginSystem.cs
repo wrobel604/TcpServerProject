@@ -22,14 +22,14 @@ namespace LoginSystem
                 users = new List<User>();
                 users.Add(new User {
                     login = "Admin",
-                    password = "User1Pass",
+                    password = "AdminPass",
                     recovery_questions = new KeyValuePair<string, string>("What is your mother's maiden name?", "Jonh"),
                     role = "Admin"
                 });
                 users.Add(new User
                 {
                     login = "User1",
-                    password = "AdminPass",
+                    password = "User1Pass",
                     recovery_questions = new KeyValuePair<string, string>("What is the name of your first pet?", "Bork"),
                     role = "User"
                 });
@@ -47,9 +47,9 @@ namespace LoginSystem
         {
             byte[] buffer_2 = new byte[message_size];
             Array.Copy(buffer, buffer_2, message_size);
-            return Encoding.UTF8.GetString(buffer_2);
+            return Encoding.UTF8.GetString(buffer_2).TrimEnd();
         }   
-         //logins.Where(x=> x==name).Count()>0
+         
         public int login_id(string name)    //funkcja sprawdzajaca na którym miejscu w tabeli loginów znajduje się podany login
         {
             for (int j = 0; j < users.Count; j++)
@@ -81,11 +81,11 @@ namespace LoginSystem
                 string pass=get_string(buffer_pass,message_size_pass);
                 if(users[logged_id].password == pass)
                 {
-                    //stream.Write(Encoding.Unicode.GetBytes("Haslo poprawne, Witaj " + Encoding.ASCII.GetString(nazwa_uzytkownika_bez_0) + " " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo poprawne, Witaj " + Encoding.ASCII.GetString(nazwa_uzytkownika_bez_0) + " " + Environment.NewLine).Length);
+                    stream.Write(Encoding.Unicode.GetBytes("Haslo poprawne, Witaj " + users[logged_id].login + " " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo poprawne, Witaj " + users[logged_id].login + " " + Environment.NewLine).Length);
                 }
                 else
                 {
-                    //stream.Write(Encoding.Unicode.GetBytes("Haslo niepoprawne" + Encoding.ASCII.GetString(nazwa_uzytkownika_bez_0) + " " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo niepoprawne" + Encoding.ASCII.GetString(nazwa_uzytkownika_bez_0) + " " + Environment.NewLine).Length);
+                    stream.Write(Encoding.Unicode.GetBytes("Haslo niepoprawne" + users[logged_id].login + " " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo niepoprawne" + users[logged_id].login + " " + Environment.NewLine).Length);
                     logged_id = -1;
                 }
             }
