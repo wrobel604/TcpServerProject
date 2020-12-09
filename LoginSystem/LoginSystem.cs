@@ -8,343 +8,156 @@ using LoginSystem.Models;
 namespace LoginSystem
 {
     public class LoginSystem : StreamManager
-    //public class LoginSystem
     {
-        public static List<User> users = null;
-        private User user;
-        int Buffer_size = 1024;
-        int logged_id = -1; // 0 - admin, 1+ inni użytkownicy
-
-        public LoginSystem(NetworkStream ns) : base(ns)
+        public enum Status { EXIT, STAY, NEXT}
+        static UserList userList = null;
+        protected User user = null;
+        public LoginSystem(NetworkStream ns, int buffer_size = 1024) : base(ns, buffer_size)
         {
-            if (users == null)
+            if (userList == null)
             {
-                users = new List<User>();
-                users.Add(new User {
-                    login = "Admin",
-                    password = "AdminPass",
-                    recovery_questions = new KeyValuePair<string, string>("What is your mother's maiden name?", "Jonh"),
-                    role = "Admin"
-                });
-                users.Add(new User
-                {
-                    login = "User1",
-                    password = "User1Pass",
-                    recovery_questions = new KeyValuePair<string, string>("What is the name of your first pet?", "Bork"),
-                    role = "User"
-                });
-                users.Add(new User
-                {
-                    login = "Guest1",
-                    password = "Guest1Pass",
-                    recovery_questions = new KeyValuePair<string, string>("What is the name of the town where you were born?", "New York"),
-                    role = "Guest"
-                });
+                userList.addUser(new User("admin", "Qwerty123", User.UserRole.Admin) { recovery_questions = new KeyValuePair<string, string>("2+2=","4") });
+                userList.addUser(new User("user", "Qwerty123", User.UserRole.Normal) { recovery_questions = new KeyValuePair<string, string>("2+3=","5") });
+                userList.addUser(new User("quest", "Qwerty123", User.UserRole.Guest) { recovery_questions = new KeyValuePair<string, string>("3+3=","6") });
             }
         }
-
-        public string get_string(byte[] buffer, int message_size) //funckja zwracajaca string o właściwym rozmiarze
+        private bool addUser(string login, string password, string role, string question, string answer)
         {
-            byte[] buffer_2 = new byte[message_size];
-            Array.Copy(buffer, buffer_2, message_size);
-            return Encoding.UTF8.GetString(buffer_2).TrimEnd();
-        }   
-         
-        public int login_id(string name)    //funkcja sprawdzajaca na którym miejscu w tabeli loginów znajduje się podany login
-        {
-            for (int j = 0; j < users.Count; j++)
+            User.UserRole userRole = User.UserRole.Guest;
+            switch (role)
             {
-                if (name == users[j].login)
-                {
-                    return j;
-                }
+                case "Admin": userRole = User.UserRole.Admin; break;
+                case "Normal": userRole = User.UserRole.Normal; break;
             }
-            return -1;
+            User u = new User(login, password, userRole) { recovery_questions = new KeyValuePair<string, string>(question, answer) };
+            return userList.addUser(u);
         }
-
-        public void login(NetworkStream stream)  //funkcja do logowania za pomocą loginu i hasła
+        public Status loginPanel(string command)
         {
-            byte[] buffer = new byte[Buffer_size];
-            stream.Write(Encoding.Unicode.GetBytes("Wprowadz login: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz login: " + Environment.NewLine).Length);
-            int message_size = stream.Read(buffer, 0, Buffer_size);
-            string name = get_string(buffer, message_size);
-            logged_id = login_id(name);
-            if (logged_id == -1)
+            string[] array = command.Split(';');
+            switch (array[0])
             {
-                stream.Write(Encoding.Unicode.GetBytes("Login Niepoprawny " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Login Niepoprawny " + Environment.NewLine).Length);
+                case "exit": { Data = "Exit"; return Status.EXIT;  } break;
+                case "login": {
+                        if (array.Length == 3) { 
+                            user = userList.getUser(array[1], array[2]);
+                            Data = "Loged";
+                            return Status.NEXT;
+                        } else
+                        {
+                            Data = "BadArgumentCountError";
+                        }
+                    }break;
+                case "new": {
+                        try
+                        {
+                            Data = (addUser(array[1], array[2], array[3], array[4], array[5]))? "Created":"NotCreatedError";                            
+                        }catch(ArgumentException)
+                        {
+                            Data = "SimplePasswordError";
+                        }
+                    }break;
             }
-            else
-            {
-                stream.Write(Encoding.Unicode.GetBytes("Wprowadz haslo: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz haslo: " + Environment.NewLine).Length);
-                byte[] buffer_pass = new byte[Buffer_size];
-                int message_size_pass = stream.Read(buffer_pass, 0, Buffer_size);
-                string pass=get_string(buffer_pass,message_size_pass);
-                if(users[logged_id].password == pass)
-                {
-                    stream.Write(Encoding.Unicode.GetBytes("Haslo poprawne, Witaj " + users[logged_id].login + " " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo poprawne, Witaj " + users[logged_id].login + " " + Environment.NewLine).Length);
-                }
-                else
-                {
-                    stream.Write(Encoding.Unicode.GetBytes("Haslo niepoprawne" + users[logged_id].login + " " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo niepoprawne" + users[logged_id].login + " " + Environment.NewLine).Length);
-                    logged_id = -1;
-                }
-            }
+            return Status.STAY;
         }
-
-        public bool check_pass(string pass)//funkcja sprawdzająca poprawnosc hasla
+        public Status userPanel(string command)
         {
-            bool is_upper = false;
-            bool is_number = false;
-            if (pass.Length < 8)
+            string[] array = command.Split(';');
+            switch (array[0])
             {
-                return false;
-            }
-
-
-            for (int i = 0; i < pass.Length; i++)
-            {
-                if (Char.IsUpper(pass[i]))
-                {
-                    is_upper = true;
-                }
-                if (Char.IsDigit(pass[i]))
-                {
-                    is_number = true;
-                }
-            }
-            if (is_number && is_upper)
-            {
-                return true;
-            }
-            return false;
-
-
-        }
-        public void new_user(NetworkStream stream) //funkcja do tworzenia nowego użytkownika
-        {
-            stream.Write(Encoding.Unicode.GetBytes("Wprowadz nazwe nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz nazwe nowego uzytkownika: " + Environment.NewLine).Length);
-            byte[] buffer_new_name = new byte[Buffer_size];
-            int message_size_new_name = stream.Read(buffer_new_name, 0, Buffer_size);
-            bool pass_ok = false;
-            byte[] buffer_new_pass = new byte[Buffer_size];
-            int message_size_new_pass = 0;
-            while (pass_ok == false)
-            {
-                stream.Write(Encoding.Unicode.GetBytes("Wprowadz haslo nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz haslo nowego uzytkownika: " + Environment.NewLine).Length);
-                message_size_new_pass = stream.Read(buffer_new_pass, 0, Buffer_size);
-                if (check_pass(get_string(buffer_new_pass, message_size_new_pass)))
-                {
-                    pass_ok = true;
-                }
-                else
-                {
-                    stream.Write(Encoding.Unicode.GetBytes("Haslo powinno spelniac nastepujace wymagania: \n -co najmniej jedna duza litera \n -co najmniej jedna cyfra \n -dlugosc hasla nie powinna byc krotsza niz 8 znakow" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo powinno spelniac nastepujace wymagania: \n - co najmniej jedna duza litera \n - co najmniej jedna cyfra \n - dlugosc hasla nie powinna byc krotsza niz 8 znakow" + Environment.NewLine).Length);
-                }
-                
-            }
-            stream.Write(Encoding.Unicode.GetBytes("Wprowadz pytanie pomocnicze do hasla nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz pytanie pomocnicze do hasla nowego uzytkownika: " + Environment.NewLine).Length);
-            byte[] buffer_new_question = new byte[Buffer_size];
-            int message_size_new_question = stream.Read(buffer_new_question, 0, Buffer_size);
-
-            stream.Write(Encoding.Unicode.GetBytes("Wprowadz odpowiedźddo pytania pomocniczego: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz odpowiedźddo pytania pomocniczego: " + Environment.NewLine).Length);
-            byte[] buffer_new_answer = new byte[Buffer_size];
-            int message_size_new_answer = stream.Read(buffer_new_question, 0, Buffer_size);
-
-            stream.Write(Encoding.Unicode.GetBytes("Wprowadz role nowego uzytkownika: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz role nowego uzytkownika: " + Environment.NewLine).Length);
-            byte[] buffer_new_role = new byte[Buffer_size];
-            int message_size_new_role = stream.Read(buffer_new_role, 0, Buffer_size);
-            users.Add(new User
-            {
-                login = get_string(buffer_new_name, message_size_new_name),
-                password = get_string(buffer_new_pass, message_size_new_pass),
-                recovery_questions = new KeyValuePair<string, string>(get_string(buffer_new_question, message_size_new_question), get_string(buffer_new_answer, message_size_new_answer)),
-                role = get_string(buffer_new_role, message_size_new_role)
-            });
-        }
-        public void change_password(NetworkStream stream)//funkcja umozliwiajaca uzytkownikomi zmiane hasla po zalogowaniu
-        {
-            stream.Write(Encoding.Unicode.GetBytes("Podaj aktualne haslo" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Podaj aktualne haslo" + Environment.NewLine).Length);
-            byte[] buffer_old_pass = new byte[Buffer_size];
-            int message_size_old_pass = stream.Read(buffer_old_pass, 0, Buffer_size);
-            bool pass_ok = false;
-            byte[] buffer_new_pass = new byte[Buffer_size];
-            int message_size_new_pass = stream.Read(buffer_new_pass, 0, Buffer_size);
-            List<string> passwords = new List<string>();
-            for(int i = 0; i < users.Count; i++)
-            {
-                passwords.Add(users[i].password);
-            }
-
-            if (passwords.Contains(get_string(buffer_old_pass, message_size_old_pass)))
-            {
-                while (pass_ok == false)
-                {
-                    stream.Write(Encoding.Unicode.GetBytes("Podaj nowe haslo" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Podaj nowe haslo" + Environment.NewLine).Length);
-                    buffer_new_pass = new byte[Buffer_size];
-                    message_size_new_pass = stream.Read(buffer_new_pass, 0, Buffer_size);
-                    if (check_pass(get_string(buffer_new_pass, message_size_new_pass)))
-                    {
-                        pass_ok = true;
+                case "changepassword": {
+                        if (user.Role == User.UserRole.Guest)
+                        {
+                            Data = "NotPermissionError"; break;
+                        }
+                        if (user.changePassword(array[1]))
+                        {
+                            Data = "PasswordChanged";
+                        }
+                        else
+                        {
+                            Data = "SimplePasswordError";
+                        }
+                    }break;
+                case "changequestion": {
+                        if (user.Role == User.UserRole.Guest)
+                        {
+                            Data = "NotPermissionError";
+                        }
+                        user.recovery_questions = new KeyValuePair<string, string>(array[1], array[2]);
+                        Data = "GuestionChanged";
                     }
-                    else
-                    {
-                        stream.Write(Encoding.Unicode.GetBytes("Haslo powinno spelniac nastepujace wymagania: \n -co najmniej jedna duza litera \n -co najmniej jedna cyfra \n -dlugosc hasla nie powinna byc krotsza niz 8 znakow" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo powinno spelniac nastepujace wymagania: \n - co najmniej jedna duza litera \n - co najmniej jedna cyfra \n - dlugosc hasla nie powinna byc krotsza niz 8 znakow" + Environment.NewLine).Length);
+                    break;
+                case "changerole": {
+                        if (user.Role != User.UserRole.Admin)
+                        {
+                            Data = "NotPermissionError"; break;
+                        }
+                        /*userList.getUser(array[1])?.Role = array[2] switch
+                        {
+                            "Admin" => User.UserRole.Admin,
+                            "Quest" => User.UserRole.Guest,
+                            "Normal" => User.UserRole.Normal,
+                        };*/
+                        User u = userList.getUser(array[1]);
+                        if (u == null) { Data = "NotUserExistError";break; }
+                        switch (array[2])
+                        {
+                            case "Admin": userList.getUser(array[1]).Role = User.UserRole.Admin; break;
+                            case "Quest": userList.getUser(array[1]).Role = User.UserRole.Guest; break;
+                            case "Normal": userList.getUser(array[1]).Role = User.UserRole.Normal; break;
+                        }
+                        Data = "RoleChanged";
+                    }break;
+                case "new": {
+                        if (user.Role != User.UserRole.Admin)
+                        {
+                            Data = "NotPermissionError"; break;
+                        }
+                        try
+                        {
+                            Data = (addUser(array[1], array[2], array[3], array[4], array[5])) ? "Created" : "NotCreatedError";
+                        }
+                        catch (ArgumentException)
+                        {
+                            Data = "SimplePasswordError";
+                        }
                     }
-                }
-            users[users.FindIndex(x=>x.password.Equals(get_string(buffer_old_pass, message_size_old_pass)))].password = get_string(buffer_new_pass, message_size_new_pass);
-            //passwords[passwords.FindIndex(x => x.Equals(get_string(buffer_old_pass, message_size_old_pass)))] = get_string(buffer_new_pass, message_size_new_pass);
+                    break;
+                case "delete": {
+                        if (user.Role != User.UserRole.Admin)
+                        {
+                            Data = "NotPermissionError"; break;
+                        }
+                        if (userList.getUser(array[1])!=null)
+                        {
+                            userList.removeUser(array[1]);
+                            Data = (userList.getUser(array[1]) == null) ? "Deleted" : "NotDeletedError";
+                        }
+                        else
+                        {
+                            Data = "UserNotExistError";
+                        }
+                        
+                    }
+                    break;
+                case "logout": { user = null;Data = "Logout"; return Status.NEXT; }break;
             }
-            else
-            {
-                stream.Write(Encoding.Unicode.GetBytes("Podano bledne haslo" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Podano bledne haslo" + Environment.NewLine).Length);
-            }
-
+            return Status.STAY;
         }
 
-        public void remove_user(NetworkStream stream)
-        {
-            if(logged_id != 0)
-            {
-                stream.Write(Encoding.Unicode.GetBytes("Nie masz odpowiednich uprawnień" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Nie masz odpowiednich uprawnień" + Environment.NewLine).Length);
-            }
-            else
-            {
-                stream.Write(Encoding.Unicode.GetBytes("Jakiego użytkownika usunąć (podaj login)?" + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Jakiego użytkownika usunąć?" + Environment.NewLine).Length);
-                byte[] buffer_user_to_remove = new byte[Buffer_size];
-                int message_size_users_login_to_remove = stream.Read(buffer_user_to_remove, 0, Buffer_size);
-                int id = login_id(get_string(buffer_user_to_remove, message_size_users_login_to_remove));
-                users.RemoveAt(id);
-                /*logins.RemoveAt(id);
-                passwords.RemoveAt(id);
-                recovery_questions.RemoveAt(id);
-                recovery_answers.RemoveAt(id);*/
-            }
-        }
-
-        public void remain_password(NetworkStream stream)
-        {
-            byte[] buffer = new byte[Buffer_size];
-            stream.Write(Encoding.Unicode.GetBytes("Wprowadz login: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz login: " + Environment.NewLine).Length);
-            int message_size = stream.Read(buffer, 0, Buffer_size);
-            string name = get_string(buffer, message_size);
-            logged_id = login_id(name);
-
-            List<string> passwords = new List<string>();
-            for (int i = 0; i < users.Count; i++)
-            {
-                passwords.Add(users[i].password);
-            }
-
-            List<string> recovery_questions = new List<string>();
-            for (int i = 0; i < users.Count; i++)
-            {
-                recovery_questions.Add(users[i].recovery_questions.Key);
-            }
-
-            List<string> recovery_answers = new List<string>();
-            for (int i = 0; i < users.Count; i++)
-            {
-                recovery_answers.Add(users[i].recovery_questions.Value);
-            }
-
-            if (logged_id == -1)
-            {
-                stream.Write(Encoding.Unicode.GetBytes("Login Niepoprawny " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Login Niepoprawny " + Environment.NewLine).Length);
-            }
-            else
-            {
-                stream.Write(Encoding.Unicode.GetBytes(recovery_questions[login_id(name)] + Environment.NewLine), 0, Encoding.Unicode.GetBytes(recovery_questions[login_id(name)] + Environment.NewLine).Length);
-                byte[] buffer_answ = new byte[Buffer_size];
-                stream.Write(Encoding.Unicode.GetBytes("Wprowadz odpowiedz: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Wprowadz odpowiedz: " + Environment.NewLine).Length);
-                int message_size_answ = stream.Read(buffer, 0, Buffer_size);
-                string answer = get_string(buffer, message_size);
-                if(answer == recovery_answers[login_id(name)])
-                {
-                    stream.Write(Encoding.Unicode.GetBytes("Haslo to: " + passwords[login_id(name)] + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Haslo to: " + passwords[login_id(name)] + Environment.NewLine).Length);
-                }
-                else
-                {
-                    stream.Write(Encoding.Unicode.GetBytes("Błędna odpowiedz: " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("Błędna odpowiedz: " + Environment.NewLine).Length);
-                }
-
-            }
-        }
-
-        void menu(NetworkStream ns)
-        {
-            while (true)
-            {
-                if (logged_id == -1)
-                {
-                    ns.Write(Encoding.Unicode.GetBytes("1.Logowanie " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("1.Logowanie " + Environment.NewLine).Length);
-                    ns.Write(Encoding.Unicode.GetBytes("2.Nowy uzytkownik " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("2.Nowy uzytkownik " + Environment.NewLine).Length);
-                    ns.Write(Encoding.Unicode.GetBytes("3.Przypomnij haslo " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("3.Przypomnij haslo " + Environment.NewLine).Length);
-                    byte[] buffer = new byte[Buffer_size];
-                    int message_size = ns.Read(buffer, 0, Buffer_size);
-                    string buffer2 = get_string(buffer, message_size);
-                    if (buffer2 == "1")
-                    {
-                        login(ns);
-                    }
-                    else if (buffer2 == "2")
-                    {
-                        new_user(ns);
-                    }
-                    else if (buffer2 == "3")
-                    {
-                        remain_password(ns);
-                    }
-                }
-                else if (logged_id == 0)
-                {
-                    ns.Write(Encoding.Unicode.GetBytes("1.Zmien haslo " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("1.Zmien haslo " + Environment.NewLine).Length);
-                    ns.Write(Encoding.Unicode.GetBytes("2.Usun uzytkownika " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("2.U " + Environment.NewLine).Length);
-                    byte[] buffer = new byte[Buffer_size];
-                    int message_size = ns.Read(buffer, 0, Buffer_size);
-                    string buffer2 = get_string(buffer, message_size);
-                    if (buffer2 == "1")
-                    {
-                        change_password(ns);
-                    }
-                    else if (buffer2 == "2")
-                    {
-                        remove_user(ns);
-                    }
-                }
-                else
-                {
-                    ns.Write(Encoding.Unicode.GetBytes("1.Zmien haslo " + Environment.NewLine), 0, Encoding.Unicode.GetBytes("1.Zmien haslo " + Environment.NewLine).Length);
-                    byte[] buffer = new byte[Buffer_size];
-                    int message_size = ns.Read(buffer, 0, Buffer_size);
-                    string buffer2 = get_string(buffer, message_size);
-                    if (buffer2 == "1")
-                    {
-                        change_password(ns);
-                    }
-                }
-            }
-        }
         public static void messageParser(NetworkStream ns)
         {
-            //StreamManager sm = new StreamManager(ns);
             LoginSystem sm = new LoginSystem(ns);
-            while (true)
+            bool isLoginPanel = true;
+            Status status = Status.STAY;
+            string message;
+            do
             {
-                /*string message = sm.Data;
-                if(message==null || message.Length == 0) { return; } else
-                {
-                    message = message.Trim();
-                }*/
-                //tutaj mozna wstawic kod obslugujacy wiadomosc
-                //odpowiedz mozna wyslac przez sm.Data = "odpowiedz"
-
-
-
-                sm.menu(ns);  //a żeby to zadziałało to nie może być statyczna
-
-            }
+                message = sm.Data;
+                status = (isLoginPanel) ? sm.loginPanel(message) : sm.userPanel(message);
+                isLoginPanel = (status != Status.NEXT);
+            } while (status != Status.EXIT);
         }
-       
-
     }
 }

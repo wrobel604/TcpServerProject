@@ -12,7 +12,7 @@ namespace TcpServerLibrary
         byte[] data;
         public string Data
         {
-            get { int size = networkStream.Read(data, 0, data.Length); return Encoding.ASCII.GetString(data.Take(size).ToArray()); }
+            get { int size = networkStream.Read(data, 0, data.Length); return (size>0)? Encoding.ASCII.GetString(data.Take(size).ToArray()):""; }
             set { networkStream.Write(Encoding.ASCII.GetBytes(value), 0, value.Length); }
         }
 
