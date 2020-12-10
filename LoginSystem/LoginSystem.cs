@@ -144,6 +144,7 @@ namespace LoginSystem
                     }
                     break;
                 case "logout": { user = null;Data = "Logout"; return Status.NEXT; }break;
+                default: { Data = "UnknownCommandError"; }break;
             }
             return Status.STAY;
         }
