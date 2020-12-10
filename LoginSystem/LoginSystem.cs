@@ -16,6 +16,7 @@ namespace LoginSystem
         {
             if (userList == null)
             {
+                userList = new UserList();
                 userList.addUser(new User("admin", "Qwerty123", User.UserRole.Admin) { recovery_questions = new KeyValuePair<string, string>("2+2=","4") });
                 userList.addUser(new User("user", "Qwerty123", User.UserRole.Normal) { recovery_questions = new KeyValuePair<string, string>("2+3=","5") });
                 userList.addUser(new User("quest", "Qwerty123", User.UserRole.Guest) { recovery_questions = new KeyValuePair<string, string>("3+3=","6") });
@@ -41,6 +42,7 @@ namespace LoginSystem
                 case "login": {
                         if (array.Length == 3) { 
                             user = userList.getUser(array[1], array[2]);
+                            if (user == null) { Data = "LoginError"; return Status.STAY; }
                             Data = "Loged";
                             return Status.NEXT;
                         } else
@@ -51,7 +53,7 @@ namespace LoginSystem
                 case "new": {
                         try
                         {
-                            Data = (addUser(array[1], array[2], array[3], array[4], array[5]))? "Created":"NotCreatedError";                            
+                            Data = (addUser(array[1], array[2], "Normal", array[3], array[4]))? "Created":"NotCreatedError";                            
                         }catch(ArgumentException)
                         {
                             Data = "SimplePasswordError";
@@ -85,7 +87,7 @@ namespace LoginSystem
                             Data = "NotPermissionError";
                         }
                         user.recovery_questions = new KeyValuePair<string, string>(array[1], array[2]);
-                        Data = "GuestionChanged";
+                        Data = "QuestionChanged";
                     }
                     break;
                 case "changerole": {
@@ -154,9 +156,17 @@ namespace LoginSystem
             string message;
             do
             {
-                message = sm.Data;
-                status = (isLoginPanel) ? sm.loginPanel(message) : sm.userPanel(message);
-                isLoginPanel = (status != Status.NEXT);
+                try
+                {
+                    message = sm.Data.Trim();
+                    status = (isLoginPanel) ? sm.loginPanel(message) : sm.userPanel(message);
+                    if (status == Status.NEXT) { isLoginPanel = !isLoginPanel; }
+                }
+                catch(Exception e)
+                {
+                    sm.Data = e.Message;
+                }
+                
             } while (status != Status.EXIT);
         }
     }
