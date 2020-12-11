@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcpProjectTests", "TcpProje
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpClient", "TcpClient\TcpClient.csproj", "{0DEFEA89-50E2-4FCA-91BD-FED2750103C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginSystemClient", "LoginSystemClient\LoginSystemClient.csproj", "{D2599F5C-60B3-425F-A799-9C8E6E72AAFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{0DEFEA89-50E2-4FCA-91BD-FED2750103C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DEFEA89-50E2-4FCA-91BD-FED2750103C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DEFEA89-50E2-4FCA-91BD-FED2750103C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2599F5C-60B3-425F-A799-9C8E6E72AAFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2599F5C-60B3-425F-A799-9C8E6E72AAFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2599F5C-60B3-425F-A799-9C8E6E72AAFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2599F5C-60B3-425F-A799-9C8E6E72AAFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

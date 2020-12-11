@@ -59,6 +59,20 @@ namespace LoginSystem
                             Data = "SimplePasswordError";
                         }
                     }break;
+                case "recovery": {
+                        User u = userList.getUser(array[1]);
+                        if (u != null)
+                        {
+                            Data = u.Question;
+                            string password = u.getPassword(Data.Trim());
+                            Data = (password != "") ? password : "BadAnswerError";
+                        }
+                        else
+                        {
+                            Data = "NotUserExistError";
+                        }
+                    }break;
+                default: { Data = "UnknownCommandError"; }break;
             }
             return Status.STAY;
         }
