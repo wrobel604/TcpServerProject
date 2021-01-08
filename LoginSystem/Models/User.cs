@@ -13,7 +13,7 @@ namespace LoginSystem.Models
         protected string login, password;
         public UserRole Role;
         public KeyValuePair<string, string> recovery_questions;//Pary klucz-pytanie, wartość-odpowiedź
-
+        //public string message;
         public string Login { get => login; }
         public string Question { get => recovery_questions.Key; }
 
@@ -25,6 +25,7 @@ namespace LoginSystem.Models
             {
                 throw new ArgumentException("Password is too simple");
             }
+            //this.message = "";
         }
 
         public override bool Equals(object obj)
@@ -52,7 +53,7 @@ namespace LoginSystem.Models
             }
             return false;
         }
-        public string getPassword(string answer)
+        public string getPassword (string answer)
         {
             return (recovery_questions.Value == answer) ? password : "";
         }

@@ -17,6 +17,27 @@ namespace LoginSystem
             if (userList == null)
             {
                 userList = new UserList();
+
+                /*var filePath = "UserData.csv";
+                var data = File.ReadLines(filePath).Select(x => x.Split(';')).ToArray();
+                for (int k = 0; k < data.GetLength(0); k++)
+                {
+                    if(data[k][2]=="Admin")
+                    {
+                        userList.addUser(new User(data[k][0], data[k][1], User.UserRole.Admin) { recovery_questions = new KeyValuePair<string, string>(data[k][3], data[k][4]) });
+                    }
+                    else if (data[k][2] == "Normal")
+                    {
+                        userList.addUser(new User(data[k][0], data[k][1], User.UserRole.Normal) { recovery_questions = new KeyValuePair<string, string>(data[k][3], data[k][4]) });
+                    }
+                    else if (data[k][2] == "Guest")
+                    {
+                        userList.addUser(new User(data[k][0], data[k][1], User.UserRole.Guest) { recovery_questions = new KeyValuePair<string, string>(data[k][3], data[k][4]) });
+                    }
+                }*/
+                 
+
+
                 userList.addUser(new User("admin", "Qwerty123", User.UserRole.Admin) { recovery_questions = new KeyValuePair<string, string>("2+2=","4") });
                 userList.addUser(new User("user", "Qwerty123", User.UserRole.Normal) { recovery_questions = new KeyValuePair<string, string>("2+3=","5") });
                 userList.addUser(new User("quest", "Qwerty123", User.UserRole.Guest) { recovery_questions = new KeyValuePair<string, string>("3+3=","6") });
@@ -158,6 +179,24 @@ namespace LoginSystem
                     }
                     break;
                 case "logout": { user = null;Data = "Logout"; return Status.NEXT; }break;
+                /* case "sendmessage":     //sendmessage [user] [message]
+                     {
+                        if (userList.getUser(array[1])!=null)
+                        {
+                             userList.getUser(array[1]).message = array[2];
+                             Data="MessageSend"
+                        }
+                        else if(userList.getUser(array[1])==null)
+                        {
+                             Data="NotUserExistError"
+                        }
+                     }
+                     break;
+                 case "readmessage":
+                     {
+                         Data = user.message;
+                     }
+                break;*/
                 default: { Data = "UnknownCommandError"; }break;
             }
             return Status.STAY;
