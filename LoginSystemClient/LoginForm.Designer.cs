@@ -100,6 +100,7 @@ namespace LoginSystemClient
             this.RegisterButton.TabIndex = 6;
             this.RegisterButton.Text = "Zarejestruj się";
             this.RegisterButton.UseVisualStyleBackColor = true;
+            this.RegisterButton.Click += new System.EventHandler(this.RegisterButton_Click);
             // 
             // LoginForm
             // 

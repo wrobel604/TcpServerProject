@@ -35,7 +35,7 @@ namespace LoginSystem.Models.Tests
         public void getPasswordTest()
         {
             User user = new User("user", "Qwerty123");
-            user.recovery_questions = new KeyValuePair<string, string>("2+2=", "4");
+            user.recovery_question = new KeyValuePair<string, string>("2+2=", "4");
             Assert.IsTrue(user.checkPassword(user.getPassword("4")));
             Assert.IsFalse(user.checkPassword(user.getPassword("5")));
         }
