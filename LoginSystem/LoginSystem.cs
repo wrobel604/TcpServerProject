@@ -9,38 +9,22 @@ namespace LoginSystem
 {
     public class LoginSystem : StreamManager
     {
+        private static UserMessages userMessages;
+        private static UserList userList = null;
         public enum Status { EXIT, STAY, NEXT}
-        static UserList userList = null;
         protected User user = null;
         public LoginSystem(NetworkStream ns, int buffer_size = 1024) : base(ns, buffer_size)
         {
             if (userList == null)
             {
                 userList = new UserList();
-
-                /*var filePath = "UserData.csv";
-                var data = File.ReadLines(filePath).Select(x => x.Split(';')).ToArray();
-                for (int k = 0; k < data.GetLength(0); k++)
-                {
-                    if(data[k][2]=="Admin")
-                    {
-                        userList.addUser(new User(data[k][0], data[k][1], User.UserRole.Admin) { recovery_questions = new KeyValuePair<string, string>(data[k][3], data[k][4]) });
-                    }
-                    else if (data[k][2] == "Normal")
-                    {
-                        userList.addUser(new User(data[k][0], data[k][1], User.UserRole.Normal) { recovery_questions = new KeyValuePair<string, string>(data[k][3], data[k][4]) });
-                    }
-                    else if (data[k][2] == "Guest")
-                    {
-                        userList.addUser(new User(data[k][0], data[k][1], User.UserRole.Guest) { recovery_questions = new KeyValuePair<string, string>(data[k][3], data[k][4]) });
-                    }
-                }*/
-                 
-
-
-                userList.addUser(new User("admin", "Qwerty123", User.UserRole.Admin) { recovery_questions = new KeyValuePair<string, string>("2+2=","4") });
-                userList.addUser(new User("user", "Qwerty123", User.UserRole.Normal) { recovery_questions = new KeyValuePair<string, string>("2+3=","5") });
-                userList.addUser(new User("quest", "Qwerty123", User.UserRole.Guest) { recovery_questions = new KeyValuePair<string, string>("3+3=","6") });
+                userList.addUser(new User("admin", "Qwerty123", User.UserRole.Admin) { recovery_question = new KeyValuePair<string, string>("2+2=","4") });
+                userList.addUser(new User("user", "Qwerty123", User.UserRole.Normal) { recovery_question = new KeyValuePair<string, string>("2+3=","5") });
+                userList.addUser(new User("quest", "Qwerty123", User.UserRole.Guest) { recovery_question = new KeyValuePair<string, string>("3+3=","6") });
+            }
+            if(userMessages == null)
+            {
+                userMessages = new UserMessages();
             }
         }
         private bool addUser(string login, string password, string role, string question, string answer)
@@ -51,7 +35,7 @@ namespace LoginSystem
                 case "Admin": userRole = User.UserRole.Admin; break;
                 case "Normal": userRole = User.UserRole.Normal; break;
             }
-            User u = new User(login, password, userRole) { recovery_questions = new KeyValuePair<string, string>(question, answer) };
+            User u = new User(login, password, userRole) { recovery_question = new KeyValuePair<string, string>(question, answer) };
             return userList.addUser(u);
         }
         public Status loginPanel(string command)
@@ -59,7 +43,7 @@ namespace LoginSystem
             string[] array = command.Split(';');
             switch (array[0])
             {
-                case "exit": { Data = "Exit"; return Status.EXIT;  } break;
+                case "exit": { Data = "Exit"; return Status.EXIT;  } 
                 case "login": {
                         if (array.Length == 3) { 
                             user = userList.getUser(array[1], array[2]);
@@ -121,7 +105,7 @@ namespace LoginSystem
                         {
                             Data = "NotPermissionError";
                         }
-                        user.recovery_questions = new KeyValuePair<string, string>(array[1], array[2]);
+                        user.recovery_question = new KeyValuePair<string, string>(array[1], array[2]);
                         Data = "QuestionChanged";
                     }
                     break;
@@ -178,25 +162,7 @@ namespace LoginSystem
                         
                     }
                     break;
-                case "logout": { user = null;Data = "Logout"; return Status.NEXT; }break;
-                /* case "sendmessage":     //sendmessage [user] [message]
-                     {
-                        if (userList.getUser(array[1])!=null)
-                        {
-                             userList.getUser(array[1]).message = array[2];
-                             Data="MessageSend"
-                        }
-                        else if(userList.getUser(array[1])==null)
-                        {
-                             Data="NotUserExistError"
-                        }
-                     }
-                     break;
-                 case "readmessage":
-                     {
-                         Data = user.message;
-                     }
-                break;*/
+                case "logout": { user = null;Data = "Logout"; return Status.NEXT; }
                 default: { Data = "UnknownCommandError"; }break;
             }
             return Status.STAY;

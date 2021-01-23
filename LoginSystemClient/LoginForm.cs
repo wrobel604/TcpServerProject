@@ -53,5 +53,10 @@ namespace LoginSystemClient
                 }
             }
         }
+
+        private void RegisterButton_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

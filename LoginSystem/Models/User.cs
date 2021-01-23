@@ -12,10 +12,10 @@ namespace LoginSystem.Models
         }
         protected string login, password;
         public UserRole Role;
-        public KeyValuePair<string, string> recovery_questions;//Pary klucz-pytanie, wartość-odpowiedź
-        //public string message;
+        public KeyValuePair<string, string> recovery_question;//Pary klucz-pytanie, wartość-odpowiedź
+
         public string Login { get => login; }
-        public string Question { get => recovery_questions.Key; }
+        public string Question { get => recovery_question.Key; }
 
         public User(string login, string password, UserRole role = UserRole.Normal)
         {
@@ -55,7 +55,7 @@ namespace LoginSystem.Models
         }
         public string getPassword (string answer)
         {
-            return (recovery_questions.Value == answer) ? password : "";
+            return (recovery_question.Value == answer) ? password : "";
         }
 
     }
