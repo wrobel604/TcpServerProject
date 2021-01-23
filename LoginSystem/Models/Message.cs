@@ -6,21 +6,30 @@ namespace LoginSystem.Models
 {
     public class Message
     {
-        public int Sender { get; private set; }
-        public int Receiver{ get; private set; }
-        public string Content { get; private set; }
+        public string Sender { get; set; }
+        public string Receiver { get; set; }
+        public string Content { get; set; }
+        public DateTime DateTime { get; set; }
 
+        public Message() : this("", "", "") { }
         public Message(User sender, User receiver, string content)
         {
-            Sender = sender.GetHashCode();
-            Receiver = receiver.GetHashCode();
+            Sender = sender.Login;
+            Receiver = receiver.Login;
             Content = content;
+            DateTime = DateTime.Now;
         }
-        public Message(int sender_hash, int receiver_hash, string content)
+        public Message(string sender, string receiver, string content)
         {
-            Sender = sender_hash;
-            Receiver = receiver_hash;
+            Sender = sender;
+            Receiver = receiver;
             Content = content;
+            DateTime = DateTime.Now;
+        }
+
+        public override string ToString()
+        {
+            return $"From: {Sender}\nTo: {Receiver}\nWhen: {DateTime}\n{Content}";
         }
     }
 }

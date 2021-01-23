@@ -10,52 +10,29 @@ namespace LoginSystem.Models
         {
             Normal, Admin, Guest
         }
-        protected string login, password;
-        public UserRole Role;
-        public KeyValuePair<string, string> recovery_question;//Pary klucz-pytanie, wartość-odpowiedź
+        public string Login { get; set; }
+        public string Password { get; set; }
+        public string Question { get; set; }
+        public string Answer { get; set; }
+        public UserRole Role { get; set; }
 
-        public string Login { get => login; }
-        public string Question { get => recovery_question.Key; }
-
-        public User(string login, string password, UserRole role = UserRole.Normal)
+        public User() : this("", "", UserRole.Normal, "", "") { }
+        public User(string login, string password, UserRole role, string question, string answer)
         {
-            this.login = login;
-            this.Role = role;
-            if (!changePassword(password))
-            {
-                throw new ArgumentException("Password is too simple");
-            }
-            //this.message = "";
+            Login = login;
+            Password = password;
+            Question = question;
+            Answer = answer;
+            Role = role;
         }
-
         public override bool Equals(object obj)
         {
             User user = (User)obj;
-            return login == user.login;
+            return Login == user.Login;
         }
         public override int GetHashCode()
         {
             return Login.GetHashCode();
-        }
-
-
-        public bool checkPassword(string password)
-        {
-            return this.password == password;
-        }
-        public bool changePassword(string new_password)
-        {
-            PasswordRule rule = new PasswordRule();
-            if (rule.check_pass(new_password))
-            {
-                password = new_password;
-                return true;
-            }
-            return false;
-        }
-        public string getPassword (string answer)
-        {
-            return (recovery_question.Value == answer) ? password : "";
         }
 
     }
