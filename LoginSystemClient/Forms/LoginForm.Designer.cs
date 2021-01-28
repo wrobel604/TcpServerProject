@@ -29,8 +29,8 @@ namespace LoginSystemClient
         /// </summary>
         private void InitializeComponent()
         {
-            this.LoginInput = new System.Windows.Forms.TextBox();
-            this.PasswordInput = new System.Windows.Forms.TextBox();
+            this.LoginInputTextBox = new System.Windows.Forms.TextBox();
+            this.PasswordInputTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.LoginButton = new System.Windows.Forms.Button();
@@ -38,20 +38,20 @@ namespace LoginSystemClient
             this.RegisterButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // LoginInput
+            // LoginInputTextBox
             // 
-            this.LoginInput.Location = new System.Drawing.Point(12, 26);
-            this.LoginInput.Name = "LoginInput";
-            this.LoginInput.Size = new System.Drawing.Size(184, 20);
-            this.LoginInput.TabIndex = 0;
+            this.LoginInputTextBox.Location = new System.Drawing.Point(12, 26);
+            this.LoginInputTextBox.Name = "LoginInputTextBox";
+            this.LoginInputTextBox.Size = new System.Drawing.Size(184, 20);
+            this.LoginInputTextBox.TabIndex = 0;
             // 
-            // PasswordInput
+            // PasswordInputTextBox
             // 
-            this.PasswordInput.Location = new System.Drawing.Point(12, 65);
-            this.PasswordInput.Name = "PasswordInput";
-            this.PasswordInput.PasswordChar = '#';
-            this.PasswordInput.Size = new System.Drawing.Size(184, 20);
-            this.PasswordInput.TabIndex = 1;
+            this.PasswordInputTextBox.Location = new System.Drawing.Point(12, 65);
+            this.PasswordInputTextBox.Name = "PasswordInputTextBox";
+            this.PasswordInputTextBox.PasswordChar = '#';
+            this.PasswordInputTextBox.Size = new System.Drawing.Size(184, 20);
+            this.PasswordInputTextBox.TabIndex = 1;
             // 
             // label1
             // 
@@ -79,7 +79,6 @@ namespace LoginSystemClient
             this.LoginButton.TabIndex = 4;
             this.LoginButton.Text = "Zaloguj się";
             this.LoginButton.UseVisualStyleBackColor = true;
-            this.LoginButton.Click += new System.EventHandler(this.LoginButton_Click);
             // 
             // RecoveryLink
             // 
@@ -90,7 +89,6 @@ namespace LoginSystemClient
             this.RecoveryLink.TabIndex = 5;
             this.RecoveryLink.TabStop = true;
             this.RecoveryLink.Text = "Przypomnij hasło (podaj login)";
-            this.RecoveryLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.RecoveryLink_LinkClicked);
             // 
             // RegisterButton
             // 
@@ -100,7 +98,6 @@ namespace LoginSystemClient
             this.RegisterButton.TabIndex = 6;
             this.RegisterButton.Text = "Zarejestruj się";
             this.RegisterButton.UseVisualStyleBackColor = true;
-            this.RegisterButton.Click += new System.EventHandler(this.RegisterButton_Click);
             // 
             // LoginForm
             // 
@@ -112,8 +109,8 @@ namespace LoginSystemClient
             this.Controls.Add(this.LoginButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.PasswordInput);
-            this.Controls.Add(this.LoginInput);
+            this.Controls.Add(this.PasswordInputTextBox);
+            this.Controls.Add(this.LoginInputTextBox);
             this.Name = "LoginForm";
             this.Text = "LoginForm";
             this.ResumeLayout(false);
@@ -122,13 +119,12 @@ namespace LoginSystemClient
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox LoginInput;
-        private System.Windows.Forms.TextBox PasswordInput;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button LoginButton;
-        private System.Windows.Forms.LinkLabel RecoveryLink;
-        private System.Windows.Forms.Button RegisterButton;
+        public System.Windows.Forms.TextBox LoginInputTextBox;
+        public System.Windows.Forms.TextBox PasswordInputTextBox;
+        public System.Windows.Forms.Button LoginButton;
+        public System.Windows.Forms.LinkLabel RecoveryLink;
+        public System.Windows.Forms.Button RegisterButton;
     }
 }

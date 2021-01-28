@@ -55,7 +55,6 @@ namespace LoginSystemClient
             // 
             this.LoginInput.Location = new System.Drawing.Point(12, 25);
             this.LoginInput.Name = "LoginInput";
-            this.LoginInput.PasswordChar = '#';
             this.LoginInput.Size = new System.Drawing.Size(184, 20);
             this.LoginInput.TabIndex = 8;
             // 
@@ -92,6 +91,7 @@ namespace LoginSystemClient
             this.PasswordRepeatInput.PasswordChar = '#';
             this.PasswordRepeatInput.Size = new System.Drawing.Size(184, 20);
             this.PasswordRepeatInput.TabIndex = 12;
+            this.PasswordRepeatInput.TextChanged += new System.EventHandler(this.PasswordRepeatInput_TextChanged);
             // 
             // label4
             // 
@@ -106,7 +106,6 @@ namespace LoginSystemClient
             // 
             this.QuestionInput.Location = new System.Drawing.Point(12, 160);
             this.QuestionInput.Name = "QuestionInput";
-            this.QuestionInput.PasswordChar = '#';
             this.QuestionInput.Size = new System.Drawing.Size(184, 20);
             this.QuestionInput.TabIndex = 14;
             // 
@@ -123,7 +122,6 @@ namespace LoginSystemClient
             // 
             this.AnswerInput.Location = new System.Drawing.Point(12, 204);
             this.AnswerInput.Name = "AnswerInput";
-            this.AnswerInput.PasswordChar = '#';
             this.AnswerInput.Size = new System.Drawing.Size(184, 20);
             this.AnswerInput.TabIndex = 16;
             // 
@@ -135,9 +133,8 @@ namespace LoginSystemClient
             this.RegisterButton.TabIndex = 18;
             this.RegisterButton.Text = "Zarejestruj się";
             this.RegisterButton.UseVisualStyleBackColor = true;
-            this.RegisterButton.Click += new System.EventHandler(this.RegisterButton_Click);
             // 
-            // RegisterUser
+            // RegisterUserForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -153,7 +150,7 @@ namespace LoginSystemClient
             this.Controls.Add(this.PasswordInput);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.LoginInput);
-            this.Name = "RegisterUser";
+            this.Name = "RegisterUserForm";
             this.Text = "RegisterUser";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -163,15 +160,15 @@ namespace LoginSystemClient
         #endregion
 
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox LoginInput;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox PasswordInput;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox PasswordRepeatInput;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox QuestionInput;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox AnswerInput;
-        private System.Windows.Forms.Button RegisterButton;
+        public System.Windows.Forms.TextBox LoginInput;
+        public System.Windows.Forms.TextBox PasswordInput;
+        public System.Windows.Forms.TextBox PasswordRepeatInput;
+        public System.Windows.Forms.TextBox QuestionInput;
+        public System.Windows.Forms.TextBox AnswerInput;
+        public System.Windows.Forms.Button RegisterButton;
     }
 }

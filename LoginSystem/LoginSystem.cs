@@ -16,7 +16,7 @@ namespace LoginSystem
         int answerLimit;
         static private string BadArgumentCount = "badargumentcount";
         static private string NotUserExistError = "notuserexisterror";
-        static private string SimplePasswordError = "notuserexisterror";
+        static private string SimplePasswordError = "simplepassworderror";
         static private string NotLogInUserError = "notloginusererror";
         static private string NotPermissionError = "notpermissionerror";
         public LoginSystem(NetworkStream ns, int buffer_size = 1024) : base(ns, buffer_size)
@@ -45,7 +45,7 @@ namespace LoginSystem
             if (array.Length >= 5)
             {
                 if (UserDB.getUser(array[0]) != null) { return "userexisterror"; }
-                if (isCorrectPassword(array[1])) { return SimplePasswordError; }
+                if (!isCorrectPassword(array[1])) { return SimplePasswordError; }
                 try
                 {
                     UserDB.addUser(new User(array[0], array[1], (User.UserRole)Enum.Parse(typeof(User.UserRole), array[2]), array[3], array[4]));

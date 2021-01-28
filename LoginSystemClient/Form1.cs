@@ -13,30 +13,24 @@ namespace LoginSystemClient
 {
     public partial class Form1 : Form
     {
-        TcpClient client;
+        FormsManager formsManager;
         public Form1()
         {
             InitializeComponent();
         }
 
-        private void Login(object sender, EventArgs e)
+        private void ConnectButton_Click(object sender, EventArgs e)
         {
             try
             {
-                client = new TcpClient("127.0.0.1", 5555);
+                TcpClient tcpClient = new TcpClient(IpTextBox.Text, (int)PortNumberBox.Value);
                 this.Hide();
-                LoginForm lf = new LoginForm(client);
-                DialogResult dialogResult = lf.ShowDialog();
-                if (dialogResult != DialogResult.OK)
-                {
-                    this.Close();
-                }
-            }catch(SocketException)
+                formsManager = new FormsManager(tcpClient);
+                formsManager.Exit += () => { this.Close(); };
+            }catch(Exception exc)
             {
-                MessageBox.Show("Nie można nawiązać połączenia z serwerem");
-                this.Close();
+                MessageBox.Show(exc.Message);
             }
-            
         }
     }
 }

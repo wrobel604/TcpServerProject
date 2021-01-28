@@ -39,7 +39,7 @@ namespace LoginSystemTest
                 }
                 LoginSystem.LoginSystem.UserDB = new LoginSystem.Collections.UserXmlListWithMessages(userPath, messagePath);
                 tcpServer.ServerMessageParserFunction = LoginSystem.LoginSystem.messageParser;//Zeby to zadziałało to messageParser musi być statyczna
-                tcpServer.Listening();
+                tcpServer.ListeningMultipleClient();
             }
             catch (Exception e)
             {

@@ -11,18 +11,11 @@ using System.Windows.Forms;
 
 namespace LoginSystemClient
 {
-    public partial class RegisterUserForm : Form
+    public partial class LoginForm : Form
     {
-        TcpServerLibrary.StreamManager streamManager;
-        public RegisterUserForm(TcpClient client)
+        public LoginForm()
         {
             InitializeComponent();
-            streamManager = new TcpServerLibrary.StreamManager(client.GetStream());
-        }
-
-        private void RegisterButton_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
