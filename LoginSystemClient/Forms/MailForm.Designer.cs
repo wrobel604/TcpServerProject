@@ -65,6 +65,7 @@ namespace LoginSystemClient.Forms
             this.napiszWiadomośćToolStripMenuItem.Name = "napiszWiadomośćToolStripMenuItem";
             this.napiszWiadomośćToolStripMenuItem.Size = new System.Drawing.Size(118, 20);
             this.napiszWiadomośćToolStripMenuItem.Text = "Napisz wiadomość";
+            this.napiszWiadomośćToolStripMenuItem.Click += new System.EventHandler(this.napiszWiadomośćToolStripMenuItem_Click);
             // 
             // opcjeToolStripMenuItem
             // 
@@ -78,32 +79,37 @@ namespace LoginSystemClient.Forms
             // zmieńHasłoToolStripMenuItem
             // 
             this.zmieńHasłoToolStripMenuItem.Name = "zmieńHasłoToolStripMenuItem";
-            this.zmieńHasłoToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.zmieńHasłoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.zmieńHasłoToolStripMenuItem.Text = "Zmień hasło";
+            this.zmieńHasłoToolStripMenuItem.Click += new System.EventHandler(this.zmieńHasłoToolStripMenuItem_Click);
             // 
             // zmieńPytanieToolStripMenuItem
             // 
             this.zmieńPytanieToolStripMenuItem.Name = "zmieńPytanieToolStripMenuItem";
-            this.zmieńPytanieToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.zmieńPytanieToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.zmieńPytanieToolStripMenuItem.Text = "Zmień pytanie";
+            this.zmieńPytanieToolStripMenuItem.Click += new System.EventHandler(this.zmieńPytanieToolStripMenuItem_Click);
             // 
             // odświeżToolStripMenuItem
             // 
             this.odświeżToolStripMenuItem.Name = "odświeżToolStripMenuItem";
             this.odświeżToolStripMenuItem.Size = new System.Drawing.Size(63, 20);
             this.odświeżToolStripMenuItem.Text = "Odśwież";
+            this.odświeżToolStripMenuItem.Click += new System.EventHandler(this.odświeżToolStripMenuItem_Click);
             // 
             // wylogujToolStripMenuItem
             // 
             this.wylogujToolStripMenuItem.Name = "wylogujToolStripMenuItem";
             this.wylogujToolStripMenuItem.Size = new System.Drawing.Size(63, 20);
             this.wylogujToolStripMenuItem.Text = "Wyloguj";
+            this.wylogujToolStripMenuItem.Click += new System.EventHandler(this.wylogujToolStripMenuItem_Click);
             // 
             // wyjdźToolStripMenuItem
             // 
             this.wyjdźToolStripMenuItem.Name = "wyjdźToolStripMenuItem";
             this.wyjdźToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
             this.wyjdźToolStripMenuItem.Text = "Wyjdź";
+            this.wyjdźToolStripMenuItem.Click += new System.EventHandler(this.wyjdźToolStripMenuItem_Click);
             // 
             // MessageTextBox
             // 
@@ -122,6 +128,7 @@ namespace LoginSystemClient.Forms
             this.AnswerButton.TabIndex = 3;
             this.AnswerButton.Text = "Odpowiedz";
             this.AnswerButton.UseVisualStyleBackColor = true;
+            this.AnswerButton.Click += new System.EventHandler(this.AnswerButton_Click);
             // 
             // NextSendButton
             // 
@@ -131,6 +138,7 @@ namespace LoginSystemClient.Forms
             this.NextSendButton.TabIndex = 4;
             this.NextSendButton.Text = "Przekaż dalej";
             this.NextSendButton.UseVisualStyleBackColor = true;
+            this.NextSendButton.Click += new System.EventHandler(this.NextSendButton_Click);
             // 
             // MessageList
             // 
@@ -145,6 +153,7 @@ namespace LoginSystemClient.Forms
             this.MessageList.TabIndex = 5;
             this.MessageList.UseCompatibleStateImageBehavior = false;
             this.MessageList.View = System.Windows.Forms.View.Details;
+            this.MessageList.SelectedIndexChanged += new System.EventHandler(this.MessageList_SelectedIndexChanged);
             // 
             // Nadawca
             // 
@@ -169,6 +178,7 @@ namespace LoginSystemClient.Forms
             this.MainMenuStrip = this.MainMenu;
             this.Name = "MailForm";
             this.Text = "MailForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MailForm_FormClosing);
             this.MainMenu.ResumeLayout(false);
             this.MainMenu.PerformLayout();
             this.ResumeLayout(false);

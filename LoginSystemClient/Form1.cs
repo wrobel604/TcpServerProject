@@ -25,8 +25,10 @@ namespace LoginSystemClient
             {
                 TcpClient tcpClient = new TcpClient(IpTextBox.Text, (int)PortNumberBox.Value);
                 this.Hide();
-                formsManager = new FormsManager(tcpClient);
-                formsManager.Exit += () => { this.Close(); };
+                formsManager = new FormsManager(new UserCommandManager(tcpClient));
+                formsManager.Run();
+                tcpClient.Close();
+                this.Close();
             }catch(Exception exc)
             {
                 MessageBox.Show(exc.Message);

@@ -15,6 +15,7 @@ namespace LoginSystemClient
         public RegisterUserForm()
         {
             InitializeComponent();
+            DialogResult = DialogResult.Cancel;
         }
 
         private void PasswordRepeatInput_TextChanged(object sender, EventArgs e)
@@ -27,6 +28,15 @@ namespace LoginSystemClient
             else
             {
                 PasswordInput.BackColor = Color.White;
+            }
+        }
+
+        private void RegisterButton_Click(object sender, EventArgs e)
+        {
+            if (PasswordInput.Text != PasswordRepeatInput.Text) { MessageBox.Show("Hasła nie są takie same"); } else
+            {
+                DialogResult = DialogResult.OK;
+                this.Close();
             }
         }
     }

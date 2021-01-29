@@ -15,6 +15,13 @@ namespace LoginSystemClient.Forms
         public ChangeForm()
         {
             InitializeComponent();
+            DialogResult = DialogResult.Cancel;
+        }
+
+        private void SubmitButton_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
     }
 }

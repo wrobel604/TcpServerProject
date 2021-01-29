@@ -49,9 +49,9 @@ namespace LoginSystemClient
             // 
             this.PasswordInputTextBox.Location = new System.Drawing.Point(12, 65);
             this.PasswordInputTextBox.Name = "PasswordInputTextBox";
-            this.PasswordInputTextBox.PasswordChar = '#';
             this.PasswordInputTextBox.Size = new System.Drawing.Size(184, 20);
             this.PasswordInputTextBox.TabIndex = 1;
+            this.PasswordInputTextBox.UseSystemPasswordChar = true;
             // 
             // label1
             // 
@@ -79,6 +79,7 @@ namespace LoginSystemClient
             this.LoginButton.TabIndex = 4;
             this.LoginButton.Text = "Zaloguj się";
             this.LoginButton.UseVisualStyleBackColor = true;
+            this.LoginButton.Click += new System.EventHandler(this.LoginButton_Click);
             // 
             // RecoveryLink
             // 
@@ -89,6 +90,7 @@ namespace LoginSystemClient
             this.RecoveryLink.TabIndex = 5;
             this.RecoveryLink.TabStop = true;
             this.RecoveryLink.Text = "Przypomnij hasło (podaj login)";
+            this.RecoveryLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.RecoveryLink_LinkClicked);
             // 
             // RegisterButton
             // 
@@ -98,9 +100,11 @@ namespace LoginSystemClient
             this.RegisterButton.TabIndex = 6;
             this.RegisterButton.Text = "Zarejestruj się";
             this.RegisterButton.UseVisualStyleBackColor = true;
+            this.RegisterButton.Click += new System.EventHandler(this.RegisterButton_Click);
             // 
             // LoginForm
             // 
+            this.AcceptButton = this.LoginButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(211, 175);

@@ -31,7 +31,7 @@ namespace LoginSystemClient
         {
             this.Question = new System.Windows.Forms.TextBox();
             this.Answer = new System.Windows.Forms.TextBox();
-            this.Send = new System.Windows.Forms.Button();
+            this.SendButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -51,14 +51,15 @@ namespace LoginSystemClient
             this.Answer.Size = new System.Drawing.Size(284, 20);
             this.Answer.TabIndex = 1;
             // 
-            // Send
+            // SendButton
             // 
-            this.Send.Location = new System.Drawing.Point(12, 140);
-            this.Send.Name = "Send";
-            this.Send.Size = new System.Drawing.Size(284, 23);
-            this.Send.TabIndex = 2;
-            this.Send.Text = "Wyślij";
-            this.Send.UseVisualStyleBackColor = true;
+            this.SendButton.Location = new System.Drawing.Point(12, 140);
+            this.SendButton.Name = "SendButton";
+            this.SendButton.Size = new System.Drawing.Size(284, 23);
+            this.SendButton.TabIndex = 2;
+            this.SendButton.Text = "Wyślij";
+            this.SendButton.UseVisualStyleBackColor = true;
+            this.SendButton.Click += new System.EventHandler(this.SendButton_Click);
             // 
             // label1
             // 
@@ -71,11 +72,12 @@ namespace LoginSystemClient
             // 
             // RecoveryForm
             // 
+            this.AcceptButton = this.SendButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(308, 172);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.Send);
+            this.Controls.Add(this.SendButton);
             this.Controls.Add(this.Answer);
             this.Controls.Add(this.Question);
             this.Name = "RecoveryForm";
@@ -89,6 +91,6 @@ namespace LoginSystemClient
         private System.Windows.Forms.Label label1;
         public System.Windows.Forms.TextBox Question;
         public System.Windows.Forms.TextBox Answer;
-        public System.Windows.Forms.Button Send;
+        public System.Windows.Forms.Button SendButton;
     }
 }

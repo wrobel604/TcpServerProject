@@ -71,9 +71,9 @@ namespace LoginSystemClient
             // 
             this.PasswordInput.Location = new System.Drawing.Point(12, 68);
             this.PasswordInput.Name = "PasswordInput";
-            this.PasswordInput.PasswordChar = '#';
             this.PasswordInput.Size = new System.Drawing.Size(184, 20);
             this.PasswordInput.TabIndex = 10;
+            this.PasswordInput.UseSystemPasswordChar = true;
             // 
             // label3
             // 
@@ -88,9 +88,9 @@ namespace LoginSystemClient
             // 
             this.PasswordRepeatInput.Location = new System.Drawing.Point(12, 115);
             this.PasswordRepeatInput.Name = "PasswordRepeatInput";
-            this.PasswordRepeatInput.PasswordChar = '#';
             this.PasswordRepeatInput.Size = new System.Drawing.Size(184, 20);
             this.PasswordRepeatInput.TabIndex = 12;
+            this.PasswordRepeatInput.UseSystemPasswordChar = true;
             this.PasswordRepeatInput.TextChanged += new System.EventHandler(this.PasswordRepeatInput_TextChanged);
             // 
             // label4
@@ -133,9 +133,11 @@ namespace LoginSystemClient
             this.RegisterButton.TabIndex = 18;
             this.RegisterButton.Text = "Zarejestruj się";
             this.RegisterButton.UseVisualStyleBackColor = true;
+            this.RegisterButton.Click += new System.EventHandler(this.RegisterButton_Click);
             // 
             // RegisterUserForm
             // 
+            this.AcceptButton = this.RegisterButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(209, 270);

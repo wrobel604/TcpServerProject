@@ -33,7 +33,7 @@ namespace LoginSystemClient.Forms
             this.Input2 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.Input1 = new System.Windows.Forms.TextBox();
-            this.AcceptButton = new System.Windows.Forms.Button();
+            this.SubmitButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label2
@@ -49,9 +49,9 @@ namespace LoginSystemClient.Forms
             // 
             this.Input2.Location = new System.Drawing.Point(15, 72);
             this.Input2.Name = "Input2";
-            this.Input2.PasswordChar = '#';
             this.Input2.Size = new System.Drawing.Size(184, 20);
             this.Input2.TabIndex = 16;
+            this.Input2.UseSystemPasswordChar = true;
             // 
             // label1
             // 
@@ -66,25 +66,27 @@ namespace LoginSystemClient.Forms
             // 
             this.Input1.Location = new System.Drawing.Point(15, 25);
             this.Input1.Name = "Input1";
-            this.Input1.PasswordChar = '#';
             this.Input1.Size = new System.Drawing.Size(184, 20);
             this.Input1.TabIndex = 14;
+            this.Input1.UseSystemPasswordChar = true;
             // 
-            // AcceptButton
+            // SubmitButton
             // 
-            this.AcceptButton.Location = new System.Drawing.Point(12, 98);
-            this.AcceptButton.Name = "AcceptButton";
-            this.AcceptButton.Size = new System.Drawing.Size(187, 23);
-            this.AcceptButton.TabIndex = 18;
-            this.AcceptButton.Text = "Zmień hasło";
-            this.AcceptButton.UseVisualStyleBackColor = true;
+            this.SubmitButton.Location = new System.Drawing.Point(12, 98);
+            this.SubmitButton.Name = "SubmitButton";
+            this.SubmitButton.Size = new System.Drawing.Size(187, 23);
+            this.SubmitButton.TabIndex = 18;
+            this.SubmitButton.Text = "Zmień hasło";
+            this.SubmitButton.UseVisualStyleBackColor = true;
+            this.SubmitButton.Click += new System.EventHandler(this.SubmitButton_Click);
             // 
             // ChangeForm
             // 
+            this.AcceptButton = this.SubmitButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(212, 129);
-            this.Controls.Add(this.AcceptButton);
+            this.Controls.Add(this.SubmitButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.Input2);
             this.Controls.Add(this.label1);
@@ -99,7 +101,7 @@ namespace LoginSystemClient.Forms
         #endregion
         public System.Windows.Forms.TextBox Input2;
         public System.Windows.Forms.TextBox Input1;
-        public System.Windows.Forms.Button AcceptButton;
+        public System.Windows.Forms.Button SubmitButton;
         public System.Windows.Forms.Label label2;
         public System.Windows.Forms.Label label1;
     }

@@ -14,7 +14,14 @@ namespace LoginSystemClient
     {
         public RecoveryForm()
         {
-            InitializeComponent();
+            InitializeComponent(); 
+            DialogResult = DialogResult.Cancel;
+        }
+
+        private void SendButton_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.OK;
+            this.Close();
         }
     }
 }

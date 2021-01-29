@@ -13,11 +13,14 @@ namespace LoginSystemClient
         TcpClient tcpClient;
         StreamManager sm;
         public string Error { get; private set; }
-        public bool IsLogin { get; private set; }
         public UserCommandManager(TcpClient tcpclient) {
-            IsLogin = false;
             tcpClient = tcpclient;
             sm = new StreamManager(tcpClient.GetStream());
+        }
+        ~UserCommandManager()
+        {
+            sm = null;
+            tcpClient.Close();
         }
         public UserCommandManager(string hostname, int port):this(new TcpClient(hostname,port)) {}
         private string sendCommand(string command)
@@ -52,7 +55,7 @@ namespace LoginSystemClient
         public string Answer(string login, string answer)
         {
             string result = sendCommand(CommandBuilder.Answer(login, answer));
-            if (result == "notuserexisterror" || result == "answerlimiterror") { Error = result; return ""; }
+            if (result == "notuserexisterror" || result == "answerlimiterror" || result == "badanswererror") { Error = result; return ""; }
             Error = "";
             return result;
         }

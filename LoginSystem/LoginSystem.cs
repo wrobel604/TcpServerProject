@@ -145,7 +145,7 @@ namespace LoginSystem
                 return "incorrectroleerror";
             }
             UserDB.updateUser();
-            return "relechanged";
+            return "rolechanged";
         }
         //delete;login
         protected string delete(string login)
