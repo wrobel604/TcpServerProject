@@ -31,7 +31,8 @@ namespace LoginSystemClient
         {
             this.Question = new System.Windows.Forms.TextBox();
             this.Answer = new System.Windows.Forms.TextBox();
-            this.Send = new System.Windows.Forms.Button();
+            this.SendButton = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Question
@@ -45,27 +46,38 @@ namespace LoginSystemClient
             // 
             // Answer
             // 
-            this.Answer.Location = new System.Drawing.Point(12, 101);
+            this.Answer.Location = new System.Drawing.Point(12, 114);
             this.Answer.Name = "Answer";
             this.Answer.Size = new System.Drawing.Size(284, 20);
             this.Answer.TabIndex = 1;
             // 
-            // Send
+            // SendButton
             // 
-            this.Send.Location = new System.Drawing.Point(12, 127);
-            this.Send.Name = "Send";
-            this.Send.Size = new System.Drawing.Size(284, 23);
-            this.Send.TabIndex = 2;
-            this.Send.Text = "Wyślij";
-            this.Send.UseVisualStyleBackColor = true;
-            this.Send.Click += new System.EventHandler(this.Send_Click);
+            this.SendButton.Location = new System.Drawing.Point(12, 140);
+            this.SendButton.Name = "SendButton";
+            this.SendButton.Size = new System.Drawing.Size(284, 23);
+            this.SendButton.TabIndex = 2;
+            this.SendButton.Text = "Wyślij";
+            this.SendButton.UseVisualStyleBackColor = true;
+            this.SendButton.Click += new System.EventHandler(this.SendButton_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 98);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(56, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Odpiwiedź";
             // 
             // RecoveryForm
             // 
+            this.AcceptButton = this.SendButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(308, 158);
-            this.Controls.Add(this.Send);
+            this.ClientSize = new System.Drawing.Size(308, 172);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.SendButton);
             this.Controls.Add(this.Answer);
             this.Controls.Add(this.Question);
             this.Name = "RecoveryForm";
@@ -76,9 +88,9 @@ namespace LoginSystemClient
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox Question;
-        private System.Windows.Forms.TextBox Answer;
-        private System.Windows.Forms.Button Send;
+        private System.Windows.Forms.Label label1;
+        public System.Windows.Forms.TextBox Question;
+        public System.Windows.Forms.TextBox Answer;
+        public System.Windows.Forms.Button SendButton;
     }
 }

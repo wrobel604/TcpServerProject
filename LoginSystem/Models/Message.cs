@@ -29,7 +29,7 @@ namespace LoginSystem.Models
 
         public override string ToString()
         {
-            return $"From: {Sender}\nTo: {Receiver}\nWhen: {DateTime}\n{Content}";
+            return $"{Sender};{Receiver};{DateTime};{Content}";
         }
     }
 }
