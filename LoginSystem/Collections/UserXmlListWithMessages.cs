@@ -38,6 +38,7 @@ namespace LoginSystem.Collections
             if (getUser(message.Sender) != null && getUser(message.Receiver) != null)
             {
                 messageList.Add(message);
+                saveMessages();
                 return true;
             }
             return false;

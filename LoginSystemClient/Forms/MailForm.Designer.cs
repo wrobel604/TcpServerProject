@@ -42,7 +42,6 @@ namespace LoginSystemClient.Forms
             this.NextSendButton = new System.Windows.Forms.Button();
             this.MessageList = new System.Windows.Forms.ListView();
             this.Nadawca = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.Data = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.MainMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -79,14 +78,14 @@ namespace LoginSystemClient.Forms
             // zmieńHasłoToolStripMenuItem
             // 
             this.zmieńHasłoToolStripMenuItem.Name = "zmieńHasłoToolStripMenuItem";
-            this.zmieńHasłoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.zmieńHasłoToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.zmieńHasłoToolStripMenuItem.Text = "Zmień hasło";
             this.zmieńHasłoToolStripMenuItem.Click += new System.EventHandler(this.zmieńHasłoToolStripMenuItem_Click);
             // 
             // zmieńPytanieToolStripMenuItem
             // 
             this.zmieńPytanieToolStripMenuItem.Name = "zmieńPytanieToolStripMenuItem";
-            this.zmieńPytanieToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.zmieńPytanieToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.zmieńPytanieToolStripMenuItem.Text = "Zmień pytanie";
             this.zmieńPytanieToolStripMenuItem.Click += new System.EventHandler(this.zmieńPytanieToolStripMenuItem_Click);
             // 
@@ -143,8 +142,7 @@ namespace LoginSystemClient.Forms
             // MessageList
             // 
             this.MessageList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Nadawca,
-            this.Data});
+            this.Nadawca});
             this.MessageList.HideSelection = false;
             this.MessageList.Location = new System.Drawing.Point(12, 27);
             this.MessageList.MultiSelect = false;
@@ -158,12 +156,7 @@ namespace LoginSystemClient.Forms
             // Nadawca
             // 
             this.Nadawca.Text = "Nadawca";
-            this.Nadawca.Width = 91;
-            // 
-            // Data
-            // 
-            this.Data.Text = "Data";
-            this.Data.Width = 89;
+            this.Nadawca.Width = 180;
             // 
             // MailForm
             // 
@@ -200,6 +193,5 @@ namespace LoginSystemClient.Forms
         public System.Windows.Forms.Button NextSendButton;
         public System.Windows.Forms.ListView MessageList;
         private System.Windows.Forms.ColumnHeader Nadawca;
-        private System.Windows.Forms.ColumnHeader Data;
     }
 }

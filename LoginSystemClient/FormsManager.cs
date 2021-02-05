@@ -29,6 +29,8 @@ namespace LoginSystemClient
                     case DialogResult.OK:
                         {
                             exit = Login(loginForm.LoginInputTextBox.Text, loginForm.PasswordInputTextBox.Text);
+                            userCommand.Logout();
+                            if (userCommand.Error != "") { MessageBox.Show("Błąd wylogowywania");return; }
                             break;
                         }
                     //Wyjście
@@ -80,6 +82,7 @@ namespace LoginSystemClient
                             break; }
                 }
             }
+            userCommand.Exit();
         }
 
         protected bool Login(string login, string password)
@@ -103,8 +106,8 @@ namespace LoginSystemClient
         //true - wyjście, false - wylogowanie
         protected bool MailBoxFunction()
         {
-            MailForm mailForm = new MailForm(userCommand);
-            return (mailForm.ShowDialog() == DialogResult.Abort);
+           MailForm mailForm = new MailForm(userCommand);
+           return mailForm.ShowDialog() == DialogResult.Abort;
         }
     }
 }

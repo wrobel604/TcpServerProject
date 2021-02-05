@@ -8,17 +8,18 @@ using System.Threading.Tasks;
 using TcpServerLibrary;
 using System.IO;
 using LoginSystem.Models;
+using System.Net.Sockets;
 
 namespace LoginSystemClient.Tests
 {
     [TestClass()]
     public class UserCommandManagerTests
     {
-        Task runServer()
+        Task runServer(int port =5555)
         {
             return new Task(() =>
             {
-                TcpServer tcpServer = new TcpServer("127.0.0.1", 5555);
+                TcpServer tcpServer = new TcpServer("127.0.0.1", port);
                 string userPath = "test_users.xml", messagePath = "test_message.xml";
 
                 HashSet<User> users = new HashSet<User>();
@@ -36,6 +37,7 @@ namespace LoginSystemClient.Tests
                 LoginSystem.LoginSystem.UserDB = new LoginSystem.Collections.UserXmlListWithMessages(userPath, messagePath);
                 tcpServer.ServerMessageParserFunction = LoginSystem.LoginSystem.messageParser;
                 tcpServer.Listening();
+                
             });
         }
 
@@ -49,6 +51,19 @@ namespace LoginSystemClient.Tests
             Assert.IsTrue(userCommandManager.Login("user", "Qwerty123"));
             userCommandManager.Exit();
             server.Wait();
+
+            Task textserver = runServer();
+            textserver.Start();
+
+            TcpClient tcpClient = new TcpClient("127.0.0.1", 5555);
+            StreamManager sm = new StreamManager(tcpClient.GetStream());
+            sm.Data = "login;n;n";
+            Assert.AreNotEqual(sm.Data, "loged");
+            sm.Data = "login;user;Qwerty123";
+            Assert.AreEqual(sm.Data, "loged");
+            sm.Data = "exit";
+
+            textserver.Wait();
         }
 
         [TestMethod()]
@@ -63,6 +78,23 @@ namespace LoginSystemClient.Tests
             Assert.IsTrue(userCommandManager.Login("Ala", "zaq1@WSX"));
             userCommandManager.Exit();
             server.Wait();
+
+            Task textserver = runServer();
+            textserver.Start();
+
+            TcpClient tcpClient = new TcpClient("127.0.0.1", 5555);
+            StreamManager sm = new StreamManager(tcpClient.GetStream());
+            sm.Data = "new;Ala;s;Normal;A;A";
+            Assert.AreNotEqual(sm.Data, "created");
+            sm.Data = "login;Ala;s";
+            Assert.AreNotEqual(sm.Data, "loged");
+            sm.Data = "new;Ala;zaq1@WSX;Normal;A;A";
+            Assert.AreEqual(sm.Data, "created");
+            sm.Data = "login;Ala;zaq1@WSX";
+            Assert.AreEqual(sm.Data, "loged");
+            sm.Data = "exit";
+
+            textserver.Wait();
         }
 
         [TestMethod()]
@@ -72,12 +104,32 @@ namespace LoginSystemClient.Tests
             server.Start();
             UserCommandManager userCommandManager = new UserCommandManager("127.0.0.1", 5555);
             string newpassword = "Password123";
+            Assert.IsFalse(userCommandManager.ChangePassword(newpassword));
             Assert.IsTrue(userCommandManager.Login("user", "Qwerty123"), userCommandManager.Error);
             Assert.IsTrue(userCommandManager.ChangePassword(newpassword));
             Assert.IsTrue(userCommandManager.Logout(), userCommandManager.Error);
             Assert.IsTrue(userCommandManager.Login("user", newpassword));
             userCommandManager.Exit();
             server.Wait();
+
+            Task textserver = runServer();
+            textserver.Start();
+
+            TcpClient tcpClient = new TcpClient("127.0.0.1", 5555);
+            StreamManager sm = new StreamManager(tcpClient.GetStream());
+            sm.Data = $"changepassword;{newpassword}";
+            Assert.AreNotEqual(sm.Data, "passwordchanged");
+            sm.Data = "login;user;Qwerty123";
+            Assert.AreEqual(sm.Data, "loged");
+            sm.Data = $"changepassword;{newpassword}";
+            Assert.AreEqual(sm.Data, "passwordchanged");
+            sm.Data = "logout";
+            Assert.AreEqual(sm.Data, "logout");
+            sm.Data = $"login;user;{newpassword}";
+            Assert.AreEqual(sm.Data, "loged");
+            sm.Data = "exit";
+
+            textserver.Wait();
         }
 
         [TestMethod()]

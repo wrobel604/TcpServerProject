@@ -16,16 +16,15 @@ namespace LoginSystemClient.Forms
         List<LoginSystem.Models.Message> messageList;
         public MailForm( UserCommandManager commandManager)
         {
-            InitializeComponent(); 
-            DialogResult = DialogResult.Abort;
+            InitializeComponent();
             userCommand = commandManager;
             fillMessageView();
         }
 
         private void wylogujToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.Cancel;
             this.Close();
+            DialogResult = DialogResult.Cancel;
         }
 
         private void wyjdźToolStripMenuItem_Click(object sender, EventArgs e)
@@ -36,13 +35,14 @@ namespace LoginSystemClient.Forms
         private void MailForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             userCommand = null;
+            DialogResult = DialogResult.Abort;
         }
         private void sendMail(string content="", string receiver="")
         {
             SendMailForm sendMailForm = new SendMailForm();
             sendMailForm.ReceiverTextBox.Text = receiver;
             sendMailForm.ContentTextBox.Text = content;
-            if (sendMailForm.DialogResult == DialogResult.OK)
+            if (sendMailForm.ShowDialog() == DialogResult.OK)
             {
                 bool result = userCommand.SendMessage(sendMailForm.ReceiverTextBox.Text, sendMailForm.ContentTextBox.Text);
                 if (result) { MessageBox.Show("Wiadomość wysłana"); }
@@ -63,8 +63,7 @@ namespace LoginSystemClient.Forms
             ListViewItem item = (MessageList.SelectedItems.Count > 0) ? MessageList.SelectedItems[0] : null;
             if (item != null)
             {
-                var message = messageList.Where(x => x.Sender == item.Text && x.DateTime.ToString() == item.SubItems[0].Text);
-                if (message.Count() > 0) { var msg = message.First();  sendMail("Odpowiedź na wiadomość:\n"+msg.Content+"\n",msg.Sender); }
+                sendMail("", item.Text);
             }
         }
 
@@ -79,6 +78,7 @@ namespace LoginSystemClient.Forms
             changeForm.label1.Text = "Nowe hasło";
             changeForm.label2.Text = "Powtórz hasło";
             changeForm.Input1.UseSystemPasswordChar = true;
+            changeForm.Input2.UseSystemPasswordChar = true;
             if(changeForm.ShowDialog() == DialogResult.OK)
             {
                 if (changeForm.Input1.Text == changeForm.Input2.Text && changeForm.Input1.Text != "")
@@ -101,6 +101,8 @@ namespace LoginSystemClient.Forms
             ChangeForm changeForm = new ChangeForm();
             changeForm.label1.Text = "Nowe pytanie";
             changeForm.label2.Text = "Odpowiedź";
+            changeForm.Input1.UseSystemPasswordChar = false;
+            changeForm.Input2.UseSystemPasswordChar = false;
             if(changeForm.ShowDialog() == DialogResult.OK)
             {
                 if (changeForm.Input1.Text != "" && changeForm.Input2.Text != "")
@@ -120,12 +122,12 @@ namespace LoginSystemClient.Forms
 
         private void fillMessageView()
         {
+            MessageList.Items.Clear();
             messageParser();
             MessageTextBox.Text = "";
-            foreach(var m in messageList)
+            foreach(var m in messageList.Select(x => x.Sender).Distinct())
             {
-                ListViewItem item = new ListViewItem(m.Sender);
-                item.SubItems.Add(m.DateTime.ToString());
+                ListViewItem item = new ListViewItem(m);
                 MessageList.Items.Add(item);
             }
         }
@@ -148,12 +150,15 @@ namespace LoginSystemClient.Forms
 
         private void MessageList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            MessageBox.Show(MessageList.SelectedItems.Count.ToString());
+            MessageTextBox.Text = "";
             ListViewItem item = (MessageList.SelectedItems.Count > 0) ? MessageList.SelectedItems[0] : null;
             if (item != null)
             {
-                var message = messageList.Where(x => x.Sender == item.Text && x.DateTime.ToString() == item.SubItems[0].Text);
-                if (message.Count() > 0) { MessageTextBox.Text = message.First().Content; }
+                var messages = messageList.Where(x => x.Sender == item.Text);
+                foreach(var message in messages)
+                {
+                    MessageTextBox.Text += $"Data: {message.DateTime.ToString()}{Environment.NewLine}{Environment.NewLine}{message.Content}{Environment.NewLine}{Environment.NewLine}";
+                }
             }
         }
     }
